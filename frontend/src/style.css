@@ -1,0 +1,239 @@
+@import url('https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:ital,wght@0,400;0,700;1,400;1,700&family=Cinzel:wght@400..900&family=Cormorant+Garamond:ital,wght@0,300..700;1,300..700&family=DM+Sans:ital,opsz,wght@0,9..40,100..1000;1,9..40,100..1000&family=DM+Serif+Display:ital@0;1&family=IBM+Plex+Sans:ital,wght@0,100..700;1,100..700&family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=Lato:ital,wght@0,100;0,300;0,400;0,700;0,900;1,100;1,300;1,400;1,700;1,900&family=Libre+Franklin:ital,wght@0,100..900;1,100..900&family=Lora:ital,wght@0,400..700;1,400..700&family=Manrope:wght@200..800&family=Merriweather:ital,opsz,wght@0,18..144,300..900;1,18..144,300..900&family=Mulish:ital,wght@0,200..1000;1,200..1000&family=Noto+Sans:ital,wght@0,100..900;1,100..900&family=Nunito+Sans:ital,opsz,wght@0,6..12,200..1000;1,6..12,200..1000&family=Outfit:wght@100..900&family=Playfair+Display:ital,wght@0,400..900;1,400..900&family=Prata&family=Public+Sans:ital,wght@0,100..900;1,100..900&family=Sora:wght@100..800&family=Space+Grotesk:wght@300..700&family=Work+Sans:ital,wght@0,100..900;1,100..900&display=swap');
+
+/* Fonts: */
+[data-font="ocean"] {
+  --font-heading: "Playfair Display", serif;
+  --font-body: "Inter", sans-serif;
+}
+
+[data-font="warm"] {
+  --font-heading: "Cormorant Garamond", serif;
+  --font-body: "Lato", sans-serif;
+}
+
+[data-font="nature"] {
+  --font-heading: "Lora", serif;
+  --font-body: "Manrope", sans-serif;
+}
+
+[data-font="night"] {
+  --font-heading: "Cinzel", serif;
+  --font-body: "Work Sans", sans-serif;
+}
+
+[data-font="soft"] {
+  --font-heading: "Outfit", sans-serif;
+  --font-body: "DM Sans", sans-serif;
+}
+
+[data-font="obsidian"] {
+  --font-heading: "Space Grotesk", sans-serif;
+  --font-body: "IBM Plex Sans", sans-serif;
+}
+
+[data-font="sunset"] {
+  --font-heading: "DM Serif Display", serif;
+  --font-body: "Public Sans", sans-serif;
+}
+
+[data-font="forest"] {
+  --font-heading: "Merriweather", serif;
+  --font-body: "Atkinson Hyperlegible", sans-serif;
+}
+
+[data-font="royal"] {
+  --font-heading: "Prata", serif;
+  --font-body: "Libre Franklin", sans-serif;
+}
+
+[data-font="ice"] {
+  --font-heading: "Sora", sans-serif;
+  --font-body: "Noto Sans", sans-serif;
+}
+
+[data-font="desert"] {
+  --font-heading: "Mulish", sans-serif;
+  --font-body: "Nunito Sans", sans-serif;
+}
+
+/* CSS Reset */
+
+/* 1. Use a more-intuitive box-sizing model */
+*, *::before, *::after {
+  box-sizing: border-box;
+}
+
+/* 2. Remove default margin */
+*:not(dialog) {
+  margin: 0;
+}
+
+/* 3. Enable keyword animations */
+@media (prefers-reduced-motion: no-preference) {
+  html {
+    interpolate-size: allow-keywords;
+  }
+}
+
+body {
+  /* 4. Increase line-height */
+  line-height: 1.5;
+  /* 5. Improve text rendering */
+  -webkit-font-smoothing: antialiased;
+  background-color: whitesmoke;
+}
+
+/* 6. Improve media defaults */
+img, picture, video, canvas, svg {
+  display: block;
+  max-width: 100%;
+}
+
+/* 7. Inherit fonts for form controls */
+input, button, textarea, select {
+  font: inherit;
+}
+
+/* 8. Avoid text overflows */
+p, h1, h2, h3, h4, h5, h6 {
+  overflow-wrap: break-word;
+}
+
+/* 9. Improve line wrapping */
+p {
+  text-wrap: pretty;
+}
+h1, h2, h3, h4, h5, h6 {
+  text-wrap: balance;
+}
+
+/*
+  10. Create a root stacking context
+*/
+#root, #__next {
+  isolation: isolate;
+}
+
+/* Extra Resets: */
+button {
+  cursor: pointer;
+  border: none;
+}
+
+button:disabled {
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+
+/* Themes: */
+/* TODO: set ocean theme to deafault, so root is not redundant */
+:root {
+  --primary: #1F3A56;
+  --secondary: #5C7FA6;
+  --accent: #E8B65B;
+  --bg: #F6F8FB;
+  --surface: #FFFFFF;
+  --text: #1A1F2B;
+}
+
+[data-theme="ocean"] {
+  --primary: #1F3A56;
+  --secondary: #5C7FA6;
+  --accent: #E8B65B;
+  --bg: #F6F8FB;
+  --surface: #FFFFFF;
+  --text: #1A1F2B;
+}
+
+[data-theme="warm"] {
+  --primary: #7A3E2B;
+  --secondary: #C47A5A;
+  --accent: #F2C14E;
+  --bg: #FBF7F4;
+  --surface: #FFFFFF;
+  --text: #2B2B2B;
+}
+
+[data-theme="nature"] {
+  --primary: #2F5D50;
+  --secondary: #7FAF9B;
+  --accent: #A8D5BA;
+  --bg: #F4F8F6;
+  --surface: #FFFFFF;
+  --text: #1F2A2E;
+}
+
+[data-theme="night"] {
+  --primary: #0D1B2A;
+  --secondary: #1B263B;
+  --accent: #E0A458;
+  --bg: #0A0F1A;
+  --surface: #111827;
+  --text: #E5E7EB;
+}
+
+[data-theme="soft"] {
+  --primary: #6C8EAD;
+  --secondary: #A7C7E7;
+  --accent: #F4A261;
+  --bg: #F7FAFC;
+  --surface: #FFFFFF;
+  --text: #2D3748;
+}
+
+[data-theme="obsidian"] {
+  --primary: #7C3AED;
+  --secondary: #1F1B2E;
+  --accent: #22D3EE;
+  --bg: #050507;
+  --surface: #0F0F14;
+  --text: #F9FAFB;
+}
+
+[data-theme="sunset"] {
+  --primary: #FF5E5B;
+  --secondary: #D72638;
+  --accent: #F4D35E;
+  --bg: #FFF5F5;
+  --surface: #FFFFFF;
+  --text: #2B2B2B;
+}
+
+[data-theme="forest"] {
+  --primary: #1B4332;
+  --secondary: #2D6A4F;
+  --accent: #95D5B2;
+  --bg: #F1FAF4;
+  --surface: #FFFFFF;
+  --text: #081C15;
+}
+
+[data-theme="royal"] {
+  --primary: #2C2C54;
+  --secondary: #706FD3;
+  --accent: #FFD700;
+  --bg: #F7F7FB;
+  --surface: #FFFFFF;
+  --text: #1E1E2F;
+}
+
+[data-theme="ice"] {
+  --primary: #3A86FF;
+  --secondary: #A0C4FF;
+  --accent: #CAF0F8;
+  --bg: #F1FAFF;
+  --surface: #FFFFFF;
+  --text: #1D3557;
+}
+
+[data-theme="desert"] {
+  --primary: #BC6C25;
+  --secondary: #DDA15E;
+  --accent: #E9C46A;
+  --bg: #FFF8F0;
+  --surface: #FFFFFF;
+  --text: #3D2B1F;
+}
+
+
+/* Images: */
