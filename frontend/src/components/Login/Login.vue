@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { ref } from "vue"
 import { IconMail, IconLock, IconEye, IconEyeOff } from '@tabler/icons-vue'
+import { auth } from "../services/auth.service"
 const email = ref("")
 const password = ref("")
 const showPassword = ref(false)
@@ -15,7 +16,13 @@ const handleLogin = async () => {
 
   console.log('handle login')
   try {
-    // TODO: post to endpoint
+    const payload = {
+      email: email.value,
+      password: password.value
+    }
+
+    const request = await auth(payload)
+    console.log(request)
     console.log(email.value, password.value)
 
   } catch (err) {
@@ -31,31 +38,42 @@ const handleLogin = async () => {
       <label>Email address</label>
       <div class="input-wrapper">
         <IconMail class="icon" />
-        <input v-model="email" type="email" placeholder="you@example.com" />
+        <input
+          v-model="email"
+          type="email"
+          placeholder="you@example.com"
+          required
+        />
       </div>
     </div>
 
     <div>
-  <label>Password</label>
-  <div class="input-wrapper">
-    <IconLock class="icon" />
+      <label>Password</label>
+      <div class="input-wrapper">
+        <IconLock class="icon" />
 
-    <input
-      v-model="password"
-      :type="showPassword ? 'text' : 'password'"
-      placeholder="Enter your password"
-    />
+        <input
+          v-model="password"
+          :type="showPassword ? 'text' : 'password'"
+          placeholder="Enter your password"
+          minlength="6"
+          maxlength="20"
+          oninvalid="this.setCustomValidity('Password too short')"
+          oninput="this.setCustomValidity('')"
+          pattern="^(?=.*[A-Z])(?=.*\d).+$"
+          required
+        />
 
-    <button
-      type="button"
-      class="toggle-password"
-      @click="showPassword = !showPassword"
-    >
-      <IconEye class="icon" v-if="!showPassword" />
-      <IconEyeOff class="icon" v-else />
-    </button>
-  </div>
-</div>
+        <button
+          type="button"
+          class="toggle-password"
+          @click="showPassword = !showPassword"
+        >
+          <IconEye class="icon" v-if="!showPassword" />
+          <IconEyeOff class="icon" v-else />
+        </button>
+      </div>
+    </div>
 
     <p v-if="errorMessage">{{ errorMessage }}</p>
 
