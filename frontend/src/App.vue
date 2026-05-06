@@ -1,9 +1,7 @@
 <script setup lang="ts">
-
-import MainPage from './components/MainPage.vue';
+import { RouterView } from 'vue-router'
 </script>
 
 <template>
-  <!-- eslint-disable-next-line vue/require-component-is -->
-  <MainPage />
+  <RouterView />
 </template>
