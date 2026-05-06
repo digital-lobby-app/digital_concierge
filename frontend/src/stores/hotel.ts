@@ -3,15 +3,18 @@ import { ref } from 'vue'
 
 export const useHotelStore = defineStore('hotel', () => {
   const loaded = ref(false)
+  const slug = ref('dev-hotel') // ← dev slug
 
-  async function fetchBySlug(slug: string) {
+  async function fetchBySlug(s: string) {
+    slug.value = s
     loaded.value = true
-    return true // always resolves for now
+    return true
   }
 
   async function fetchBySession() {
+    slug.value = 'dev-hotel'
     loaded.value = true
   }
 
-  return { loaded, fetchBySlug, fetchBySession }
+  return { loaded, slug, fetchBySlug, fetchBySession }
 })

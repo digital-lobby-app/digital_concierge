@@ -5,7 +5,7 @@ import { useHotelStore } from '@/stores/hotel';
 const router = createRouter({
   history: createWebHistory(),
   routes: [
-    // ── Public ──────────────────────────────────────────────
+    // Public
     {
       path: '/login',
       name: 'login',
@@ -18,7 +18,7 @@ const router = createRouter({
       component: () => import('@/views/NotFoundView.vue'),
     },
 
-    // ── Admin (protected) ────────────────────────────────────
+    // Admin (protected)
     {
       path: '/admin',
       component: () => import('@/layouts/AdminShell.vue'),
@@ -36,7 +36,7 @@ const router = createRouter({
       ],
     },
 
-    // ── Guest portal (public) ────────────────────────────────
+    // Guest Portal
     {
       path: '/:slug',
       component: () => import('@/layouts/GuestShell.vue'),
@@ -49,6 +49,11 @@ const router = createRouter({
         {
           path: '',
           redirect: (to) => `/${to.params.slug}/guest-dashboard`,
+        },
+        {
+          path: 'guest-dashboard',
+          name: 'guest-dashboard',
+          component: () => import('@/views/guest/GuestDashboardView.vue'),
         },
         {
           path: 'map',
@@ -64,6 +69,11 @@ const router = createRouter({
           path: 'requests',
           name: 'guest-requests',
           component: () => import('@/views/guest/GuestBookView.vue'),
+        },
+        {
+          path: 'services',
+          name: 'guest-services',
+          component: () => import('@/views/guest/ServiceView.vue'),
         },
       ],
     },
