@@ -1,9 +1,7 @@
 <script setup lang="ts">
-
-import Component from './components/Component.vue';
+import { RouterView } from 'vue-router'
 </script>
 
 <template>
-  <!-- eslint-disable-next-line vue/require-component-is -->
-  <Component />
+  <RouterView />
 </template>
