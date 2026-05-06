@@ -28,9 +28,8 @@ router.post('/login', async (req, res) => {
     return res.status(401).json({ error: 'Invalid email or password' });
   }
 
-  // Forward the full session + user. The frontend will call
-  // supabase.auth.setSession(session) so its supabase-js client is hydrated.
-  return res.json({ session: data.session, user: data.user });
+  const { access_token, refresh_token, expires_at, user } = data.session;
+  return res.json({ access_token, refresh_token, expires_at, user });
 });
 
 // Logout requires both tokens because Supabase's signOut needs an active
