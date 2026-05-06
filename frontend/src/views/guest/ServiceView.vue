@@ -13,6 +13,6 @@ function goBack() {
 <template>
   <div>
     <button @click="goBack">← Back</button>
-    MapView Content
+    Service Content
   </div>
 </template>
