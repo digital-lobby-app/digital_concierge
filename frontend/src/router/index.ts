@@ -60,21 +60,25 @@ const router = createRouter({
           path: 'map',
           name: 'guest-map',
           component: () => import('@/views/guest/MapView.vue'),
+          meta: { overlay: true}
         },
         {
           path: 'about',
           name: 'guest-about',
           component: () => import('@/views/guest/AboutView.vue'),
+          meta: { overlay: true }
         },
         {
           path: 'requests',
           name: 'guest-requests',
           component: () => import('@/views/guest/GuestBookView.vue'),
+          meta: { overlay: true}
         },
         {
           path: 'services',
           name: 'guest-services',
           component: () => import('@/views/guest/ServiceView.vue'),
+          meta: { overlay: true}
         },
       ],
     },
