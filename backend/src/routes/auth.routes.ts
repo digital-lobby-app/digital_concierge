@@ -1,12 +1,11 @@
 import { Router } from 'express';
 import { z } from 'zod';
 import { supabase, createSessionClient } from '../lib/supabase';
+import { requireAuth } from '../middleware/requireAuth';
 
 const router = Router();
 
-// Login validation: only that email is well-formed and password is non-empty.
-// Signup-time complexity rules (length, character classes) don't belong here —
-// the user is checking an existing credential, not creating a new one.
+// Email format only — not full pw validation.
 const loginSchema = z.object({
   email: z.string().email().trim().toLowerCase(),
   password: z.string().min(1),
@@ -21,20 +20,15 @@ router.post('/login', async (req, res) => {
   const { data, error } = await supabase.auth.signInWithPassword(parsed.data);
 
   if (error) {
-    // Log the real Supabase error server-side for debugging, but return a
-    // generic message — don't reveal whether the email exists or the password
-    // was wrong. Both cases get the same response.
     console.error('Supabase signIn error:', error.message);
     return res.status(401).json({ error: 'Invalid email or password' });
   }
 
-  // Forward the full session + user. The frontend will call
-  // supabase.auth.setSession(session) so its supabase-js client is hydrated.
-  return res.json({ session: data.session, user: data.user });
+  const { access_token, refresh_token, expires_at, user } = data.session;
+  return res.json({ access_token, refresh_token, expires_at, user });
 });
 
-// Logout requires both tokens because Supabase's signOut needs an active
-// session on the client. The frontend sends back what we gave it at login.
+// signOut needs an active session — frontend sends both tokens back.
 const logoutSchema = z.object({
   access_token: z.string().min(1),
   refresh_token: z.string().min(1),
@@ -51,13 +45,15 @@ router.post('/logout', async (req, res) => {
   const { error } = await sessionClient.auth.signOut();
 
   if (error) {
-    // Best-effort: log the failure but tell the frontend it's done. The user
-    // has already decided they want out — the frontend will clear local state
-    // regardless, and a stuck server-side session expires on its own.
+    // Best-effort — frontend clears local state regardless.
     console.error('Supabase signOut error:', error.message);
   }
 
   return res.status(204).send();
+});
+
+router.get('/me', requireAuth, (req, res) => {
+  return res.json({ user: req.user });
 });
 
 export default router;
