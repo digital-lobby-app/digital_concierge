@@ -2,7 +2,7 @@
 import { useRouter } from 'vue-router'
 import { useHotelStore } from '@/stores/hotel'
 import { IconInfoCircle, IconMap2, IconBook, IconToolsKitchen3 } from '@tabler/icons-vue'
-import oceanBg from '@/assets/bg-imgs/ocean-bg.png'
+import oceanBg from '@/assets/bg-imgs/ocean-bg-imgs/mobile/ocean-bg-m-1.png'
 
 const router = useRouter()
 const hotel = useHotelStore()
@@ -72,7 +72,7 @@ function goTo(page: string) {
 
 .dash-btn {
   height: 9em;
-  border-radius: 1rem;
+  border-radius: var(--main-border-radius);
   border: none;
   color: #1F3A56;
   background-color: #F6F8FB;
@@ -87,7 +87,7 @@ function goTo(page: string) {
   height: 2.5rem;
   width: 2.5rem;
 }
-
+/* TODO: remove hard-coded fonts/theme colors */
 h1 {
   font-family: "Playfair Display", serif;
 }
