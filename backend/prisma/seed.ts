@@ -1,44 +1,38 @@
-// backend/prisma/seed.ts
+// SEED FILE — populates the local DB with three demo hotels for development.
 //
-// Demo data for the three hotels (Adam's, Dario's, Jon's).
-// DRAFT — placeholder content, to be filled in with Arthur.
+// First-time setup (after cloning):
+//   cp .env.example .env  &  fill in DATABASE_URL + Supabase keys. THEN:
+//   npm install                — auto-runs `prisma generate` via postinstall
+//   npx prisma migrate dev     — creates the tables
+//   npx prisma db seed         — runs THIS file, fills tables with demo data
 //
-// Open Qs flagged inline. Anything marked TBD is for Arthur to confirm
-// or fill in; anything left as a comment is a structural decision we
-// might want to revisit together.
+// The commands and what they do:
+//   prisma migrate dev    — applies any new migrations to your DB.
+//                           Run after pulling someone else's schema changes.
+//   prisma db seed        — runs this file. Tables must already exist.
+//                           Won't overwrite existing rows (we use `upsert`
+//                           with empty `update: {}`).
+//   prisma migrate reset  — nukes DB, re-runs all migrations, re-seeds.
+//                           when in doubt just reset - at small scale isn't a problem.
 
-import { PrismaClient } from '../src/generated/prisma'
+import { PrismaClient } from '../src/generated/prisma/client'
+import { PrismaPg } from '@prisma/adapter-pg'
 
-const prisma = new PrismaClient()
-
-// ─── Theme combos ─────────────────────────────────────────────────────
-// TBD with Arthur:
-//   - Names of palette categories (his Slack mentioned "ocean palette")
-//   - Names of bgImages categories ("space-bg-imgs")
-//   - Names of fontPair categories ("pre-historic-font")
-//   - Which combo each hotel gets (so flipping between hotels looks
-//     visibly different in the demo)
-
-// ─── About-module content shape ───────────────────────────────────────
-// The shape of `content` on the About module is module-owned. Below is
-// a proposed shape based on the user stories' "must include" list
-// (welcome / check-in / breakfast / wifi / reception). Arthur may want
-// to add, remove, or rename fields to match what he's designing.
-// User stories also mention OPTIONAL fields the admin can toggle on
-// per-hotel (parking, smoking, pets) — left commented in for now.
+const adapter = new PrismaPg({ connectionString: process.env.DATABASE_URL })
+const prisma = new PrismaClient({ adapter })
 
 async function main() {
   console.log('Seeding…')
 
   // ════════ HOTEL 1 — Adam's ════════════════════════════════════════
   const adam = await prisma.hotel.upsert({
-    where: { slug: 'adam-hotel' },     // <- slug locks the hotel's URL: /adam-hotel
+    where: { slug: 'adam-hotel' },     
     update: {},
     create: {
       slug: 'adam-hotel',
-      name: '',                        // TBD
-      description: '',                 // TBD
-      address: '',                     // TBD
+      name: "Adalino's Bunny Hotelino",                      
+      description: 'The best rabbit getaway carrots can buy.',                 
+      address: '11 Sonnenreich Weg, Osttirol, Österreich',                     
       logoUrl: '',                     // TBD — path to static asset, e.g. /logos/adam.png
 
       settings: {
@@ -55,34 +49,31 @@ async function main() {
             kind: 'about',
             position: 0,
             content: {
-              welcomeMessage: '',      // TBD
-              checkIn: '',             // e.g. '15:00'
-              checkOut: '',            // e.g. '11:00'
-              breakfast: '',           // e.g. '07:30 – 10:30'
-              wifiName: '',
-              wifiPassword: '',
-              receptionPhone: '',
-              // Optional (user stories: admin chooses whether to show):
-              // parking: '',
-              // smoking: '',
-              // pets: '',
+              welcomeMessage: "Welcome to our wooden huts in the hills bordering Italy. It's a fine day to be a rabbit. We're thrilled you chose to join us where you're blessed with our great vistas and vegetation. NOTE: Strict zero bird policy. All birds will be shot on-site.",      // TBD
+              checkIn: '15:00',            
+              checkOut: '09:45',            
+              breakfast: '05:00 - 08:30',           
+              wifiName: 'jajarabbit',
+              wifiPassword: 'welikecarrots',
+              receptionPhone: '+43 664 123 4567',
+              // Optional (admin chooses whether to show, configurable; other card-options, e.g. pets)
             },
           },
           {
             kind: 'map',
             position: 1,
             content: {
-              centerLat: 0,            // TBD — hotel's lat
-              centerLng: 0,            // TBD — hotel's lng
-              zoom: 14,
-              pois: [],                // empty for MVP — generic OSM tiles
+              centerLat: 0,           // TBD
+              centerLng: 0,            
+              zoom: 0,
+              pois: [],                
             },
           },
           {
             kind: 'guestbook',
             position: 2,
             content: {
-              entries: [],             // empty — guests haven't written any
+              entries: [],             // empty to begin
             },
           },
         ],

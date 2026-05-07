@@ -8,13 +8,15 @@
     "start": "node dist/server.js",
     "build": "tsc -p .",
     "dev": "nodemon src/server.ts",
-    "lint": "eslint ."
+    "lint": "eslint .",
+    "postinstall": "prisma generate"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "type": "commonjs",
   "dependencies": {
+    "@prisma/adapter-pg": "^7.8.0",
     "@prisma/client": "^7.8.0",
     "@supabase/supabase-js": "^2.105.3",
     "cors": "^2.8.6",
