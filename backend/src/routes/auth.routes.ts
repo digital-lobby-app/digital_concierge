@@ -1,6 +1,7 @@
 import { Router } from 'express';
 import { z } from 'zod';
 import { supabase, createSessionClient } from '../lib/supabase';
+import { requireAuth } from '../middleware/requireAuth';
 
 const router = Router();
 
@@ -58,6 +59,10 @@ router.post('/logout', async (req, res) => {
   }
 
   return res.status(204).send();
+});
+
+router.get('/me', requireAuth, (req, res) => {
+  return res.json({ user: req.user });
 });
 
 export default router;
