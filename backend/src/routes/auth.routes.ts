@@ -56,4 +56,28 @@ router.get('/me', requireAuth, (req, res) => {
   return res.json({ user: req.user });
 });
 
+router.post('/refresh', async (req, res) => {
+  const refreshSchema = z.object({
+    refresh_token: z.string().min(1),
+  })
+
+  const parsed = refreshSchema.safeParse(req.body)
+  if (!parsed.success) {
+    return res.status(400).json({ error: 'Invalid request body' })
+  }
+
+  const { data, error } = await supabase.auth.refreshSession({
+    refresh_token: parsed.data.refresh_token,
+  })
+
+  if (error || !data.session) {
+    console.error('Supabase refresh error:', error?.message)
+    return res.status(401).json({ error: 'Session expired' })
+  }
+
+  const { access_token, refresh_token, expires_at, user } = data.session
+
+  return res.json({ access_token, refresh_token, expires_at, user })
+})
+
 export default router;

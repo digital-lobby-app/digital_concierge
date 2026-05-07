@@ -1,13 +1,12 @@
 <script setup lang="ts">
 import Login from './Login.vue';
 import { IconDotsFilled } from '@tabler/icons-vue';
-import oceanBg from '@/assets/bg-imgs/ocean-bg.png'
 </script>
 <template>
-  <div id="login-page" :style="{ backgroundImage: `url(${oceanBg})` }">
+  <div class="login-page">
     <div class="login-content">
       <h1>Welcome to Alfred!</h1>
-      <IconDotsFilled stroke="{2}" />
+      <IconDotsFilled stroke={2} />
       <p>Login to continue to your account.</p>
     </div>
     <div class="login-content">
@@ -16,9 +15,9 @@ import oceanBg from '@/assets/bg-imgs/ocean-bg.png'
   </div>
 </template>
 <style lang="css" scoped>
-#login-page {
-  width: 100dvw;
-  height: 100dvh;
+.login-page {
+  width: 100%;
+  height: 100%;
 
   display: flex;
   flex-direction: column;
@@ -29,14 +28,14 @@ import oceanBg from '@/assets/bg-imgs/ocean-bg.png'
   position: relative;
   overflow: hidden;
 }
-#login-page::before {
+.login-page::before {
   content: "";
   position: absolute;
   inset: 0;
-  background: center/cover no-repeat;
+  background: url("../../assets/ocean-bg.png") center/cover no-repeat;
   z-index: 0;
 }
-#login-page::after {
+.login-page::after {
   content: "";
   position: absolute;
   inset: 0;
