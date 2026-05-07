@@ -13,7 +13,7 @@ const hotels: Record<string, { id: string; name: string; latitude: number; longi
   },
   'adam-hotel': {
     id: 'H002',
-    name: 'Villa des Pres',
+    name: "Adalino's Bunny Hotelino",
     latitude: 46.77694526380854,
     longitude: 12.917673716739909,
     mapZoom: 14,
