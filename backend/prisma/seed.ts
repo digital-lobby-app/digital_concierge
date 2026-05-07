@@ -34,10 +34,13 @@ async function main() {
       description: 'The best rabbit getaway carrots can buy.',                 
       address: '11 Sonnenreich Weg, Osttirol, Österreich',                     
       logoUrl: '',                     // TBD — path to static asset, e.g. /logos/adam.png
+      latitude: 46.77694526380854,
+      longitude: 12.917673716739909,
+      mapZoom: 14,
 
       settings: {
         create: {
-          palette: '',                 // TBD
+          colorPalette: '',            // TBD
           bgImages: '',                // TBD
           fontPair: '',                // TBD
         },
@@ -46,7 +49,7 @@ async function main() {
       modules: {
         create: [
           {
-            kind: 'about',
+            view: 'about',
             position: 0,
             content: {
               welcomeMessage: "Welcome to our wooden huts in the hills bordering Italy. It's a fine day to be a rabbit. We're thrilled you chose to join us where you're blessed with our great vistas and vegetation. NOTE: Strict zero bird policy. All birds will be shot on-site.",      // TBD
@@ -60,17 +63,14 @@ async function main() {
             },
           },
           {
-            kind: 'map',
+            view: 'map',
             position: 1,
             content: {
-              centerLat: 0,           // TBD
-              centerLng: 0,            
-              zoom: 0,
-              pois: [],                
+              pois: [],                // empty for MVP — generic OSM tiles, no curated points
             },
           },
           {
-            kind: 'guestbook',
+            view: 'guestbook',
             position: 2,
             content: {
               entries: [],             // empty to begin
@@ -92,10 +92,11 @@ async function main() {
       description: '',
       address: '',
       logoUrl: '',
+      // latitude / longitude / mapZoom: TBD from Dario
 
       settings: {
         create: {
-          palette: '',
+          colorPalette: '',
           bgImages: '',
           fontPair: '',
         },
@@ -104,7 +105,7 @@ async function main() {
       modules: {
         create: [
           {
-            kind: 'about',
+            view: 'about',
             position: 0,
             content: {
               welcomeMessage: '',
@@ -117,17 +118,14 @@ async function main() {
             },
           },
           {
-            kind: 'map',
+            view: 'map',
             position: 1,
             content: {
-              centerLat: 0,
-              centerLng: 0,
-              zoom: 14,
               pois: [],
             },
           },
           {
-            kind: 'guestbook',
+            view: 'guestbook',
             position: 2,
             content: {
               entries: [],
@@ -145,14 +143,17 @@ async function main() {
     update: {},
     create: {
       slug: 'jon-hotel',
-      name: '',
-      description: '',
-      address: '',
+      name: 'Le Pain Doré',
+      description: 'A baguette-themed boutique hotel in the heart of Paris.',
+      address: 'Paris, France',        // TBD — refine with Jon
       logoUrl: '',
+      latitude: 48.85367587564214,
+      longitude: 2.3364627421438335,
+      mapZoom: 14,
 
       settings: {
         create: {
-          palette: '',
+          colorPalette: '',
           bgImages: '',
           fontPair: '',
         },
@@ -161,30 +162,27 @@ async function main() {
       modules: {
         create: [
           {
-            kind: 'about',
+            view: 'about',
             position: 0,
             content: {
-              welcomeMessage: '',
-              checkIn: '',
-              checkOut: '',
-              breakfast: '',
-              wifiName: '',
-              wifiPassword: '',
-              receptionPhone: '',
+              welcomeMessage: 'Bienvenue au Pain Doré — every guest receives a fresh baguette on arrival.',
+              checkIn: '15:00',
+              checkOut: '11:00',
+              breakfast: '07:00 - 10:00',
+              wifiName: 'PainDoreGuest',
+              wifiPassword: 'baguette2026',
+              receptionPhone: '+33 1 23 45 67 89',
             },
           },
           {
-            kind: 'map',
+            view: 'map',
             position: 1,
             content: {
-              centerLat: 0,
-              centerLng: 0,
-              zoom: 14,
               pois: [],
             },
           },
           {
-            kind: 'guestbook',
+            view: 'guestbook',
             position: 2,
             content: {
               entries: [],

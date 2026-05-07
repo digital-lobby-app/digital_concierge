@@ -39,6 +39,9 @@ model Hotel {
   description String?
   address     String?
   logoUrl     String?
+  latitude    Float?
+  longitude   Float?
+  mapZoom     Int?
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
 
@@ -62,12 +65,12 @@ model User {
 
 /// Per-hotel branding & presentation config. 1:1 with Hotel.
 model Settings {
-  id        String   @id @default(uuid())
-  palette   String
-  bgImages  String
-  fontPair  String
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  id           String   @id @default(uuid())
+  colorPalette String
+  bgImages     String
+  fontPair     String
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
 
   hotelId String @unique
   hotel   Hotel  @relation(fields: [hotelId], references: [id])
@@ -76,7 +79,7 @@ model Settings {
 /// Module instance content per hotel. MVP seeds all three kinds for each hotel.
 model Module {
   id        String     @id @default(uuid())
-  kind      ModuleKind
+  view      ModuleKind
   position  Int
   content   Json
   createdAt DateTime   @default(now())
