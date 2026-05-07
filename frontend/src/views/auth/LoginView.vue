@@ -17,8 +17,8 @@ import oceanBg from '@/assets/bg-imgs/ocean-bg.png'
 </template>
 <style lang="css" scoped>
 #login-page {
-  width: 100%;
-  height: 100%;
+  width: 100dvw;
+  height: 100dvh;
 
   display: flex;
   flex-direction: column;

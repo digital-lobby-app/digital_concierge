@@ -3,7 +3,8 @@ export interface Auth {
     password: string
 }
 
-interface AuthUser {
+
+export interface AuthUser {
   id: string
   aud: string
   role: string
@@ -40,15 +41,9 @@ interface AuthUser {
   is_anonymous: boolean
 }
 
-export interface AuthResponse {
-  session: {
-    access_token: string
-    token_type: string
-    expires_in: number
-    expires_at: number
-    refresh_token: string
-    user: AuthUser
-    weak_password: null
-  }
+export interface SessionData {
+  access_token: string
+  refresh_token: string
+  expires_at: number
   user: AuthUser
 }

@@ -27,7 +27,7 @@ const handleLogin = async () => {
   try {
     const res = await adminLogin({ email: email.value, password: password.value})
 
-    auth.setToken(res.session.access_token)
+    auth.setSession(res)
 
     router.push({ name: 'admin-dashboard' })
 
@@ -87,7 +87,7 @@ const handleLogin = async () => {
       {{ loading ? "loading..." : "Login" }}
     </button>
   </form>
-  <button @click="guestLogin">Guest login</button>
+  <!-- <button @click="guestLogin">Guest login</button> -->
 </template>
 
 <style lang="css" scoped>

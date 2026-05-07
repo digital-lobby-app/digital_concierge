@@ -1,6 +1,7 @@
 import { createRouter, createWebHistory } from 'vue-router';
 import { useAuthStore } from '@/stores/auth';
 import { useHotelStore } from '@/stores/hotel';
+import { adminAuth, refreshSessionAndRetry } from '@/services/auth.service';
 
 const router = createRouter({
   history: createWebHistory(),
@@ -78,7 +79,6 @@ const router = createRouter({
       ],
     },
 
-    // ── Fallback ─────────────────────────────────────────────
     {
       path: '/:pathMatch(.*)*',
       redirect: { name: 'not-found' },
@@ -86,25 +86,45 @@ const router = createRouter({
   ],
 });
 
-// ── Global navigation guard ──────────────────────────────────
 router.beforeEach(async (to) => {
-  const auth = useAuthStore();
-  const hotel = useHotelStore();
+  const auth = useAuthStore()
+  const hotel = useHotelStore()
 
-  // Redirect to login if route requires auth and no token
-  if (to.meta.requiresAuth && !auth.token) {
-    return { name: 'login', query: { redirect: to.fullPath } };
+  // On first load — restore tokens from sessionStorage into Pinia
+  if (!auth.isAuthenticated) {
+    auth.restoreSession()
   }
 
-  // Redirect away from login if already authenticated
-  if (to.name === 'login' && auth.token) {
-    return { name: 'admin-dashboard' };
+  if (to.meta.requiresAuth) {
+    // Not authenticated at all
+    if (!auth.isAuthenticated) {
+      return { name: 'login', query: { redirect: to.fullPath } }
+    }
+
+    if (auth.isExpired) {
+      try {
+        await refreshSessionAndRetry()
+      } catch {
+        return { name: 'login' }
+      }
+    } else {
+      try {
+        const { user } = await adminAuth()
+        auth.setUser(user)
+      } catch {
+        auth.logout()
+        return { name: 'login' }
+      }
+    }
+
+    if (!hotel.loaded) {
+      await hotel.fetchBySession()
+    }
   }
 
-  // Load hotel config for admin routes if not yet loaded
-  if (to.meta.requiresAuth && auth.token && !hotel.loaded) {
-    await hotel.fetchBySession();
+  if (to.name === 'login' && auth.isAuthenticated) {
+    return { name: 'admin-dashboard' }
   }
-});
+})
 
 export default router;
