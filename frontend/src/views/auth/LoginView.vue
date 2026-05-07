@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import Login from './Login.vue';
 import { IconDotsFilled } from '@tabler/icons-vue';
-import oceanBg from '@/assets/bg-imgs/ocean-bg.png'
+import oceanBg from '@/assets/bg-imgs/ocean-bg-imgs/mobile/ocean-bg-m-1.png'
 </script>
 <template>
   <div id="login-page" :style="{ backgroundImage: `url(${oceanBg})` }">
