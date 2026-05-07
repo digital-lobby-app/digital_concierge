@@ -1,11 +1,59 @@
+<script lang="ts" setup>
+import type { Component } from 'vue';
+import { IconChevronRightFilled } from '@tabler/icons-vue';
+
+defineProps<{
+  icon: Component
+  icon_bg_color: string
+  icon_stroke_color: string
+  text_heading: string
+  text_body: string
+}>()
+</script>
+
 <template>
-      <h3 class="config-title">HOTEL IDENTITY</h3>
     <button class="config-btn">
-      <i class="config-icon"></i>
-      <div class="config-txt">
-        <h4 class="config-txt-header"></h4>
-        <p class="config-txt-body"></p>
+      <div id="icon-wrapper" :style="{ backgroundColor: icon_bg_color }">
+        <component class="btn-icon" :is="icon" :stroke="1.5" :color="icon_stroke_color"/>
       </div>
-      <i class="config-arrow"></i>
+      <div class="config-txt">
+        <h4 class="config-txt-header">{{ text_heading }}</h4>
+        <p class="config-txt-body">{{ text_body }}</p>
+      </div>
+      <i class="btn-icon"><IconChevronRightFilled stroke="1.5"/></i>
     </button>
 </template>
+
+<style lang="css" scoped>
+  .config-btn {
+    display: flex;
+    padding: var(--main-padding);
+    text-align: left;
+    gap: 1rem;
+    align-items: center;
+    font-size: 0.85rem;
+    font-family: "Inter", sans-serif;
+    background-color: #FFFFFF;
+  }
+
+  #icon-wrapper {
+    width: 5rem;
+    height: fit-content;
+    border-radius: var(--main-border-radius);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: var(--main-padding);
+  }
+
+  .btn-icon {
+    height: 2rem;
+    min-width: 2rem;
+  }
+
+  .config-txt{
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem
+  }
+</style>
