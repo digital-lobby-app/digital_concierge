@@ -87,7 +87,7 @@ const handleLogin = async () => {
       {{ loading ? "loading..." : "Login" }}
     </button>
   </form>
-  <!-- <button @click="guestLogin">Guest login</button> -->
+  <button @click="guestLogin">Guest login</button>
 </template>
 
 <style lang="css" scoped>
