@@ -4,14 +4,14 @@ const router = Router();
 
 // MOCK — replace when /hotels endpoint ships from db layer
 const hotels: Record<string, { id: string; name: string; latitude: number; longitude: number; mapZoom: number }> = {
-  'jon-hotel': {
+  'lepaindore': {
     id: 'H001',
     name: 'Le Pain Doré',
     latitude: 48.85367587564214,
     longitude: 2.3364627421438335,
     mapZoom: 14,
   },
-  'adam-hotel': {
+  'adalinos': {
     id: 'H002',
     name: "Adalino's Bunny Hotelino",
     latitude: 46.77694526380854,
