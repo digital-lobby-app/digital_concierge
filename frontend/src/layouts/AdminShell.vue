@@ -79,6 +79,7 @@ const { style } = useDraggable(el, {
   user-select: none;
   touch-action: none;
   pointer-events: auto;
+  background-color: var(--accent);
 }
 
 .drag-bounds {
@@ -106,7 +107,7 @@ const { style } = useDraggable(el, {
   z-index: 9999;
 
   width: min(30rem, 90dvw);
-  background: #F6F8FB;
+  background: var(--bg);
   border-radius: 16px;
   padding: 16px;
   pointer-events: auto;
@@ -129,5 +130,6 @@ const { style } = useDraggable(el, {
   background: transparent;
   padding: 0.5rem;
   cursor: pointer;
+  color: var(--text);
 }
 </style>

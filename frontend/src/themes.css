@@ -61,6 +61,8 @@
 :root {
   --primary: #1F3A56;
   --secondary: #5C7FA6;
+  --fixer: var(--primary);
+  --fixer: #1F3A56;
   --accent: #E8B65B;
   --bg: #F6F8FB;
   --surface: #FFFFFF;
@@ -70,6 +72,7 @@
 [data-theme="ocean"] {
   --primary: #1F3A56;
   --secondary: #5C7FA6;
+  --fixer: #1F3A56;
   --accent: #E8B65B;
   --bg: #F6F8FB;
   --surface: #FFFFFF;
@@ -79,6 +82,7 @@
 [data-theme="warm"] {
   --primary: #7A3E2B;
   --secondary: #C47A5A;
+  --fixer: #7A3E2B;
   --accent: #F2C14E;
   --bg: #FBF7F4;
   --surface: #FFFFFF;
@@ -88,6 +92,7 @@
 [data-theme="nature"] {
   --primary: #2F5D50;
   --secondary: #7FAF9B;
+  --fixer: #2F5D50;
   --accent: #A8D5BA;
   --bg: #F4F8F6;
   --surface: #FFFFFF;
@@ -97,6 +102,8 @@
 [data-theme="night"] {
   --primary: #0D1B2A;
   --secondary: #1B263B;
+  --fixer: var(--text);
+  --fixer: #E5E7EB;
   --accent: #E0A458;
   --bg: #0A0F1A;
   --surface: #111827;
@@ -106,6 +113,7 @@
 [data-theme="soft"] {
   --primary: #6C8EAD;
   --secondary: #A7C7E7;
+  --fixer: #6C8EAD;
   --accent: #F4A261;
   --bg: #F7FAFC;
   --surface: #FFFFFF;
@@ -115,6 +123,7 @@
 [data-theme="obsidian"] {
   --primary: #7C3AED;
   --secondary: #1F1B2E;
+  --fixer: #7C3AED;
   --accent: #22D3EE;
   --bg: #050507;
   --surface: #0F0F14;
@@ -124,6 +133,7 @@
 [data-theme="sunset"] {
   --primary: #FF5E5B;
   --secondary: #D72638;
+  --fixer: #FF5E5B;
   --accent: #F4D35E;
   --bg: #FFF5F5;
   --surface: #FFFFFF;
@@ -133,6 +143,7 @@
 [data-theme="forest"] {
   --primary: #1B4332;
   --secondary: #2D6A4F;
+  --fixer: #1B4332;
   --accent: #95D5B2;
   --bg: #F1FAF4;
   --surface: #FFFFFF;
@@ -142,6 +153,7 @@
 [data-theme="royal"] {
   --primary: #2C2C54;
   --secondary: #706FD3;
+  --fixer: #2C2C54;
   --accent: #FFD700;
   --bg: #F7F7FB;
   --surface: #FFFFFF;
@@ -151,6 +163,7 @@
 [data-theme="ice"] {
   --primary: #3A86FF;
   --secondary: #A0C4FF;
+  --fixer: #3A86FF;
   --accent: #CAF0F8;
   --bg: #F1FAFF;
   --surface: #FFFFFF;
@@ -160,6 +173,7 @@
 [data-theme="desert"] {
   --primary: #BC6C25;
   --secondary: #DDA15E;
+  --fixer: #BC6C25;
   --accent: #E9C46A;
   --bg: #FFF8F0;
   --surface: #FFFFFF;

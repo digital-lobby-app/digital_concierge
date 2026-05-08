@@ -1,11 +1,13 @@
 <script lang="ts" setup>
   import SettingsButton from './SettingsButton.vue';
-  import type { SettingBtn } from '../setting-types';
+  import type { PanelId, SettingBtn } from '../setting-types';
 
   defineProps<{
     title: string
     items: SettingBtn[]
   }>()
+
+  defineEmits<{ (e: "select", panelId: PanelId): void }>()
 </script>
 
 <template>
@@ -19,6 +21,7 @@
       class="config-row"
       :class="{'config-row-divider': idx !== items.length -1}"
       v-bind="item"
+      @select="$emit('select', $event)"
       />
     </div>
   </div>

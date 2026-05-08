@@ -1,9 +1,15 @@
 <script lang="ts" setup>
   import SettingGroup from './Settings Components/SettingGroup.vue';
-  import { IconHomeCog, IconPalette, IconTypography, IconPolaroid } from '@tabler/icons-vue';
-  import type { SettingBtnList } from './setting-types';
+  import { IconHomeCog, IconPalette, IconTypography, IconPolaroid, IconArrowBackUp } from '@tabler/icons-vue';
+  import { ref, type Component } from 'vue';
+  import type { SettingBtnList, PanelId } from './setting-types';
+  import ColorSchemePanel from './panels/ColorSchemePanel.vue';
+  import TypographyPanel from './panels/TypographyPanel.vue';
+  import HotelInfoPanel from './panels/HotelInfoPanel.vue';
+  import BackgroundPanel from './panels/BackgroundPanel.vue';
 
-  const HotelIdentity: SettingBtnList = [{
+  const HotelInfo: SettingBtnList = [{
+    panelId: 'hotel-info',
     icon: IconHomeCog,
     icon_stroke_color:'#35559a',
     icon_bg_color: '#e6ebf5',
@@ -13,6 +19,7 @@
 
   const HotelAppearance: SettingBtnList = [
   {
+    panelId: 'colors',
     icon: IconPalette,
     icon_stroke_color:'#dea15b',
     icon_bg_color: '#fef2e4',
@@ -20,6 +27,7 @@
     text_body: 'Choose your portal\'s colors.'
   },
   {
+    panelId: 'typography',
     icon: IconTypography,
     icon_stroke_color: '#564a8d',
     icon_bg_color: '#ece8f7',
@@ -27,6 +35,7 @@
     text_body: 'Set the fonts style for texts.'
   },
   {
+    panelId: 'background',
     icon: IconPolaroid,
     icon_stroke_color:'#577b65',
     icon_bg_color: '#eaf2ec',
@@ -34,12 +43,27 @@
     text_body: 'Select your desired atmosphere.'
   },
   ]
+
+  const activePanel = ref<PanelId>("root")
+  const panels: Record<PanelId, Component | null> = {
+  'root': null,
+  'hotel-info': HotelInfoPanel,
+  'colors': ColorSchemePanel,
+  'typography': TypographyPanel,
+  'background': BackgroundPanel,
+}
 </script>
 
 <template>
-  <div class="setting-group-container">
-    <SettingGroup title="HOTEL INFO" :items="HotelIdentity"/>
-    <SettingGroup title="APPEARANCE" :items="HotelAppearance"/>
+  <div v-if="activePanel === 'root'" class="setting-group-container">
+    <SettingGroup title="HOTEL INFO" :items="HotelInfo" @select="activePanel = $event"/>
+    <SettingGroup title="APPEARANCE" :items="HotelAppearance" @select="activePanel = $event"/>
+  </div>
+  <div v-else class="setting-group-container">
+    <component :is="panels[activePanel]" />
+    <button id="back-btn" @click="activePanel = 'root'">
+      <IconArrowBackUp stroke='2' />
+    </button>
   </div>
 </template>
 
@@ -48,5 +72,18 @@
   display: flex;
   flex-direction: column;
   gap: 1rem;
+  max-height: 85dvh;
+  overflow: auto;
+  background-color: var(--bg);
+}
+
+#back-btn {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-radius: var(--main-border-radius);
+  min-height: 3rem;
+  background-color: var(--secondary);
+  color: var(--bg);
 }
 </style>

@@ -1,18 +1,23 @@
 <script lang="ts" setup>
 import type { Component } from 'vue';
 import { IconChevronRightFilled } from '@tabler/icons-vue';
+import type { PanelId } from '../setting-types';
 
 defineProps<{
+  panelId: PanelId
   icon: Component
   icon_bg_color: string
   icon_stroke_color: string
   text_heading: string
   text_body: string
 }>()
+
+const emit = defineEmits<{ (e: "select", panelId: PanelId): void }>()
+
 </script>
 
 <template>
-    <button class="config-btn">
+    <button class="config-btn" @click="emit('select', panelId)">
       <div id="icon-wrapper" :style="{ backgroundColor: icon_bg_color }">
         <component class="btn-icon" :is="icon" :stroke="1.5" :color="icon_stroke_color"/>
       </div>
@@ -33,7 +38,8 @@ defineProps<{
     align-items: center;
     font-size: 0.85rem;
     font-family: "Inter", sans-serif;
-    background-color: #FFFFFF;
+    background-color: var(--surface);
+    color: var(--text);
   }
 
   #icon-wrapper {
@@ -49,6 +55,7 @@ defineProps<{
   .btn-icon {
     height: 2rem;
     min-width: 2rem;
+    color: var(--text)
   }
 
   .config-txt{
