@@ -1,13 +1,17 @@
 <script setup lang="ts">
 import { ref } from 'vue'
+import { useRoute } from 'vue-router'
 import { useDraggable } from '@vueuse/core';
-import GuestDashboardView from '@/views/guest/GuestDashboardView.vue'
 import SettingsView from '@/views/admin/SettingsView.vue';
 import { IconSettings, IconX } from '@tabler/icons-vue'
+
+
+const route = useRoute()
 
 const settingsOpen = ref(false)
 const el = ref<HTMLElement | null>(null)
 const screenBounds = ref<HTMLElement | null>(null)
+const isDragging = ref(false)
 
 // TODO: fix initialValue defaults if mobile or desktop
 const { style } = useDraggable(el, {
@@ -15,12 +19,18 @@ const { style } = useDraggable(el, {
   initialValue: {x: 280, y: 40 },
   preventDefault: true,
   stopPropagation: true,
+  onStart: () => { isDragging.value = true },
+  onEnd: () => { isDragging.value = false },
 })
 </script>
 
 <template>
   <div ref="screenBounds" class="drag-bounds">
-    <GuestDashboardView />
+    <iframe
+  :src="`/${route.params.slug}/guest-dashboard`"
+  class="preview-frame"
+  :style="{ pointerEvents: isDragging ? 'none' : 'auto' }"
+/>
 
     <button
       id="draggable-btn"
@@ -49,7 +59,16 @@ const { style } = useDraggable(el, {
 
 <style lang="css" scoped>
 
+/* iframe style */
+.preview-frame {
+  width: 100%;
+  height: 100%;
+  border: none;
+  pointer-events: inherit;
+}
+
 #draggable-btn {
+  position: absolute;
   display: flex;
   justify-content: center;
   align-items: center;

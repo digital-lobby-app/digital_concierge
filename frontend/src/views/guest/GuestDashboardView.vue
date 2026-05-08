@@ -3,6 +3,7 @@ import { useRouter } from 'vue-router'
 import { useHotelStore } from '@/stores/hotel'
 import { IconInfoCircle, IconMap2, IconBook, IconToolsKitchen3 } from '@tabler/icons-vue'
 import oceanBg from '@/assets/bg-imgs/ocean-bg-imgs/mobile/ocean-bg-m-1.png'
+import gsap from 'gsap'
 
 const router = useRouter()
 const hotel = useHotelStore()
@@ -11,13 +12,36 @@ const iconStroke = "1.5"
 function goTo(page: string) {
   router.push(`/${hotel.slug}/${page}`)
 }
+
+
+//gsap
+function onEnter() {
+  const tl = gsap.timeline()
+
+  tl.fromTo('.text-anim',
+    { opacity: 0, y: 20 },
+    { opacity: 1, y: 0, duration: 0.6, ease: 'power3.inOut', stagger: 0.14 }
+  )
+  .fromTo('.dash-btn',
+    { opacity: 0, y: 32 },
+    {
+      opacity: 1,
+      y: 0,
+      duration: 1.2,
+      ease: 'power3.inOut',
+      stagger: 0.14,
+    },
+    '-=0.7'
+  )
+}
 </script>
 
 <template>
+  <Transition :css="false" @enter="onEnter" appear>
   <div id="main-container" :style="{ backgroundImage: `url(${oceanBg})` }">
     <div id="main-txt">
-      <h1 id="main-header">Welcome</h1>
-      <p id="main-p">We're here to make your stay exceptional</p>
+      <h1 class="main-header text-anim">Welcome</h1>
+      <p class="main-p text-anim">We're here to make your stay exceptional</p>
     </div>
     <div id="dash-btns">
       <button class="dash-btn" @click="goTo('about')">
@@ -38,6 +62,7 @@ function goTo(page: string) {
       </button>
     </div>
   </div>
+  </Transition>
 </template>
 
 <style lang="css" scoped>
@@ -56,11 +81,11 @@ function goTo(page: string) {
   color: #1F3A56;
 }
 
-#main-header {
+.main-header {
   font-size: 3rem;
 }
 
-#main-p {
+.main-p {
   font-size: 1.2rem;
 }
 
