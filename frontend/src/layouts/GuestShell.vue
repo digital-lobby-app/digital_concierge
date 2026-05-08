@@ -111,7 +111,6 @@ function onContentLeave(el: Element, done: () => void) {
 .content {
   flex: 1;
   overflow-y: auto;
-  border: 3px solid red;
   padding: 0rem 1rem;
 }
 

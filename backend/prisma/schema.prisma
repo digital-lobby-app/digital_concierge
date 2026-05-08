@@ -1,0 +1,90 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Get a free hosted Postgres database in seconds: `npx create-db`
+
+generator client {
+  provider = "prisma-client"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+// ─────────────────────────────────────────────────────────────────────────
+// Enums
+// ─────────────────────────────────────────────────────────────────────────
+
+enum Role {
+  admin
+  visitor // vestigial in MVP — no guest authentication
+}
+
+enum ModuleKind {
+  about
+  map
+  guestbook
+}
+
+// ─────────────────────────────────────────────────────────────────────────
+// Models
+// ─────────────────────────────────────────────────────────────────────────
+
+/// The tenant. Every non-Hotel row is scoped by hotelId.
+model Hotel {
+  id          String   @id @default(uuid())
+  slug        String   @unique
+  name        String
+  description String?
+  address     String?
+  logoUrl     String?
+  latitude    Float?
+  longitude   Float?
+  mapZoom     Int?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  users    User[]
+  settings Settings?
+  modules  Module[]
+}
+
+/// Hotel admin identity. One row per Supabase auth user.
+model User {
+  id             String   @id @default(uuid())
+  supabaseUserId String   @unique
+  email          String   @unique
+  role           Role     @default(admin)
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+
+  hotelId String
+  hotel   Hotel  @relation(fields: [hotelId], references: [id])
+}
+
+/// Per-hotel branding & presentation config. 1:1 with Hotel.
+model Settings {
+  id           String   @id @default(uuid())
+  colorPalette String
+  bgImages     String
+  fontPair     String
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  hotelId String @unique
+  hotel   Hotel  @relation(fields: [hotelId], references: [id])
+}
+
+/// Module instance content per hotel. MVP seeds all three kinds for each hotel.
+model Module {
+  id        String     @id @default(uuid())
+  view      ModuleKind
+  position  Int
+  content   Json
+  createdAt DateTime   @default(now())
+  updatedAt DateTime   @updatedAt
+
+  hotelId String
+  hotel   Hotel  @relation(fields: [hotelId], references: [id])
+}
