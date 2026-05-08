@@ -1,19 +1,11 @@
-// SEED FILE — populates the local DB with three demo hotels for development.
-//
-// First-time setup (after cloning):
-//   cp .env.example .env  &  fill in DATABASE_URL + Supabase keys. THEN:
+// SEED FILE — populates the local DB with three demo hotels for development. To use:
+// fill in DATABASE_URL + Supabase keys. THEN:
 //   npm install                — auto-runs `prisma generate` via postinstall
 //   npx prisma migrate dev     — creates the tables
-//   npx prisma db seed         — runs THIS file, fills tables with demo data
+//   npx prisma db seed         — runs THIS file, fills tables with demo data. hardocdes user id. adds user emails we have.
 //
-// The commands and what they do:
-//   prisma migrate dev    — applies any new migrations to your DB.
-//                           Run after pulling someone else's schema changes.
-//   prisma db seed        — runs this file. Tables must already exist.
-//                           Won't overwrite existing rows (we use `upsert`
-//                           with empty `update: {}`).
-//   prisma migrate reset  — nukes DB, re-runs all migrations, re-seeds.
-//                           when in doubt just reset - at small scale isn't a problem.
+// also note that:
+//   prisma migrate reset  — nukes DB, re-runs all migrations, re-seeds. When in doubt, just reset. 
 
 import { PrismaClient } from '../src/generated/prisma/client'
 import { PrismaPg } from '@prisma/adapter-pg'
@@ -29,6 +21,7 @@ async function main() {
     where: { slug: 'adam-hotel' },     
     update: {},
     create: {
+      id: 'H001',                      // hardcoded for MVP
       slug: 'adam-hotel',
       name: "Adalino's Bunny Hotelino",                      
       description: 'The best rabbit getaway carrots can buy.',                 
@@ -66,7 +59,7 @@ async function main() {
             view: 'map',
             position: 1,
             content: {
-              pois: [],                // empty for MVP — generic OSM tiles, no curated points
+              pois: [],                // empty for MVP
             },
           },
           {
@@ -80,19 +73,19 @@ async function main() {
       },
     },
   })
-  console.log(`  ✓ ${adam.slug}`)
+  console.log(`  ✓ ${adam.slug}  (${adam.id})`)
 
   // ════════ HOTEL 2 — Dario's ════════════════════════════════════════
   const dario = await prisma.hotel.upsert({
     where: { slug: 'dario-hotel' },
     update: {},
     create: {
+      id: 'H002',
       slug: 'dario-hotel',
       name: '',
       description: '',
       address: '',
       logoUrl: '',
-      // latitude / longitude / mapZoom: TBD from Dario
 
       settings: {
         create: {
@@ -135,17 +128,18 @@ async function main() {
       },
     },
   })
-  console.log(`  ✓ ${dario.slug}`)
+  console.log(`  ✓ ${dario.slug}  (${dario.id})`)
 
   // ════════ HOTEL 3 — Jon's ══════════════════════════════════════════
   const jon = await prisma.hotel.upsert({
     where: { slug: 'jon-hotel' },
     update: {},
     create: {
+      id: 'H003',
       slug: 'jon-hotel',
       name: 'Le Pain Doré',
       description: 'A baguette-themed boutique hotel in the heart of Paris.',
-      address: 'Paris, France',        // TBD — refine with Jon
+      address: 'Paris, France',        
       logoUrl: '',
       latitude: 48.85367587564214,
       longitude: 2.3364627421438335,
@@ -192,7 +186,19 @@ async function main() {
       },
     },
   })
-  console.log(`  ✓ ${jon.slug}`)
+  console.log(`  ✓ ${jon.slug}  (${jon.id})`)
+
+  await prisma.user.upsert({
+    where: { email: 'alfred@adalinos.com' },
+    update: {},
+    create: { email: 'alfred@adalinos.com', hotelId: 'H001' },
+  })
+
+  await prisma.user.upsert({
+    where: { email: 'alfred@lepaindore.fr' },
+    update: {},
+    create: { email: 'alfred@lepaindore.fr', hotelId: 'H003' },
+  })
 
   console.log('Seed complete.')
 }

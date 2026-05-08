@@ -33,7 +33,7 @@ enum ModuleKind {
 
 /// The tenant. Every non-Hotel row is scoped by hotelId.
 model Hotel {
-  id          String   @id @default(uuid())
+  id          String   @id
   slug        String   @unique
   name        String
   description String?
@@ -53,7 +53,7 @@ model Hotel {
 /// Hotel admin identity. One row per Supabase auth user.
 model User {
   id             String   @id @default(uuid())
-  supabaseUserId String   @unique
+  supabaseUserId String?  @unique
   email          String   @unique
   role           Role     @default(admin)
   createdAt      DateTime @default(now())
