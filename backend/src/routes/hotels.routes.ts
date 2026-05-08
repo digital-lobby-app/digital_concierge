@@ -38,12 +38,7 @@ router.get('/me', (req, res) => {
     return res.status(404).json({ error: 'User not found' });
   }
 
-  const hotel = hotels[slug];
-  if (hotel === undefined) {
-    return res.status(500).json({ error: 'Hotel mapping inconsistent' });
-  }
-
-  return res.json(hotel);
+  return res.json(slug);
 });
 
 router.get('/:slug', (req, res) => {
