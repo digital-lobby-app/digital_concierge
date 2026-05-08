@@ -2,7 +2,7 @@
 import { computed } from 'vue'
 import { useRoute } from 'vue-router'
 import GuestDashboardView from '@/views/guest/GuestDashboardView.vue'
-import { useOverlayBack } from '@/useSlideOverlay'
+import { useOverlayBack } from '@/composables/useSlideOverlay'
 import { IconArrowLeft } from '@tabler/icons-vue'
 import gsap from 'gsap'
 
