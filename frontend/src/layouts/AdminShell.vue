@@ -1,12 +1,12 @@
 <script setup lang="ts">
 import { ref } from 'vue'
-import { useRoute } from 'vue-router'
 import { useDraggable } from '@vueuse/core';
 import SettingsView from '@/views/admin/SettingsView.vue';
 import { IconSettings, IconX } from '@tabler/icons-vue'
+import { useHotelStore } from '@/stores/hotel';
 
 
-const route = useRoute()
+const hotel = useHotelStore()
 
 const settingsOpen = ref(false)
 const el = ref<HTMLElement | null>(null)
@@ -27,7 +27,7 @@ const { style } = useDraggable(el, {
 <template>
   <div ref="screenBounds" class="drag-bounds">
     <iframe
-  :src="`/${route.params.slug}/guest-dashboard`"
+  :src="`/${hotel.slug}/guest-dashboard`"
   class="preview-frame"
   :style="{ pointerEvents: isDragging ? 'none' : 'auto' }"
 />

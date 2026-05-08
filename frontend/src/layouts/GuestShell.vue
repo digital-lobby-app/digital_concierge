@@ -10,9 +10,6 @@ const { back } = useOverlayBack()
 const route = useRoute()
 const isOverlay = computed(() => route.meta.overlay === true)
 
-console.log(route.meta)
-console.log(route.matched)
-
 //gsap animations
 function onEnter(el: Element, done: () => void) {
   gsap.fromTo(el,

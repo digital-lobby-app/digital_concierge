@@ -45,6 +45,8 @@ const router = createRouter({
         const hotel = useHotelStore();
         const ok = await hotel.fetchBySlug(to.params.slug as string);
         if (!ok) return { name: 'not-found' };
+
+        
       },
       children: [
         {
@@ -125,8 +127,8 @@ router.beforeEach(async (to) => {
       }
     }
 
-    if (!hotel.loaded) {
-      await hotel.fetchBySession()
+    if (!hotel.loaded && auth.user) {
+      await hotel.fetchBySession(auth.user?.id)
     }
   }
 

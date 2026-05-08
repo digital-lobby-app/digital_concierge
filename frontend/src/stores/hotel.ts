@@ -1,10 +1,10 @@
 import { defineStore } from 'pinia'
 import { ref } from 'vue'
-import { fetchHotelBySlug } from '@/services/hotel.service'
+import { fetchHotelBySlug, fetchSlugById } from '@/services/hotel.service'
 
 export const useHotelStore = defineStore('hotel', () => {
   const loaded = ref(false)
-  const slug = ref('dev-hotel') // ← dev slug
+  const slug = ref<string>()
   const name = ref('')
   const latitude = ref<number | null>(null)
   const longitude = ref<number | null>(null)
@@ -26,10 +26,17 @@ export const useHotelStore = defineStore('hotel', () => {
     }
   }
 
-  async function fetchBySession() {
-    slug.value = 'dev-hotel'
-    loaded.value = true
+  async function fetchBySession(id: string) {
+  try {
+    const resolvedSlug = await fetchSlugById(id)
+    const ok = await fetchBySlug(resolvedSlug)
+    if (!ok) return false
+    return true
+  } catch (err) {
+    console.error('fetchBySession failed:', err)
+    return false
   }
+}
 
   return { loaded, slug, name, latitude, longitude, mapZoom, fetchBySlug, fetchBySession }
 })
