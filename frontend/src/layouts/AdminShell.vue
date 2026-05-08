@@ -4,9 +4,13 @@ import { useDraggable } from '@vueuse/core';
 import SettingsView from '@/views/admin/SettingsView.vue';
 import { IconSettings, IconX } from '@tabler/icons-vue'
 import { useHotelStore } from '@/stores/hotel';
+import { useThemeStore } from '@/stores/themeStore';
+import { storeToRefs } from 'pinia';
 
 
 const hotel = useHotelStore()
+const themeStore = useThemeStore()
+const { currentTheme } = storeToRefs(themeStore)
 
 const settingsOpen = ref(false)
 const el = ref<HTMLElement | null>(null)
@@ -27,6 +31,7 @@ const { style } = useDraggable(el, {
 <template>
   <div ref="screenBounds" class="drag-bounds">
     <iframe
+  :key="currentTheme"
   :src="`/${hotel.slug}/guest-dashboard`"
   class="preview-frame"
   :style="{ pointerEvents: isDragging ? 'none' : 'auto' }"
