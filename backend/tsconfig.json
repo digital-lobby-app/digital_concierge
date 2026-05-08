@@ -1,12 +1,15 @@
 {
   "compilerOptions": {
     "module": "commonjs",                                
-    "rootDir": "./src",
+    "rootDir": "./",
     "outDir": "./dist",  
     "moduleResolution": "node10", 
     "strict": true,
     "esModuleInterop": true,
     "skipLibCheck": true,
-    "forceConsistentCasingInFileNames": true
+    "forceConsistentCasingInFileNames": true,
+    "types": ["node"]
   },
+  "include": ["src/**/*", "prisma/**/*"],
+  "exclude": ["node_modules", "dist", "src/generated"]
 }
