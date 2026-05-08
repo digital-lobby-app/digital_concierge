@@ -22,7 +22,11 @@ body {
   line-height: 1.5;
   /* 5. Improve text rendering */
   -webkit-font-smoothing: antialiased;
-  background-color: whitesmoke;
+}
+
+html, body {
+  color: var(--text);
+  background: var(--bg);
 }
 
 /* 6. Improve media defaults */

@@ -78,7 +78,7 @@ function onEnter() {
 }
 
 #main-txt {
-  color: #1F3A56;
+  color: var(--primary);
 }
 
 .main-header {
@@ -99,8 +99,8 @@ function onEnter() {
   height: 9em;
   border-radius: var(--main-border-radius);
   border: none;
-  color: #1F3A56;
-  background-color: #F6F8FB;
+  color: var(--fixer);
+  background-color: var(--bg);
   display: flex;
   flex-direction: column;
   justify-content: center;
