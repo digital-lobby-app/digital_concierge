@@ -1,10 +1,10 @@
 # Project name
 
-Alfred
+*(working name — to be confirmed)*
 
 # Repository
 
-https://github.com/digital-lobby-app/digital_concierge
+`https://github.com/[org]/[name]`
 
 # One liner
 
@@ -41,13 +41,12 @@ Cycle 2 priorities are decided at the MVP demo on Friday 8 May based on what the
 
 # Tech stack
 
-- **Frontend:** Vue 3 + TypeScript (Vite). Tailwind CSS templates (or similar) with CSS custom properties for per-hotel theming. Leaflet + OpenStreetMap for the map.
-- **Backend:** Node.js + TypeScript on Express, with Prisma as ORM.
-- **Database:** PostgreSQL (local).
-- **Authentication:** Supabase Auth for hotel admin login. User identity is the only data on Supabase; all application data stays on self-hosted Postgres.
-- **Containerisation:** Docker (local development environment only, not deployed to a hosted production environment).
+- **Frontend:** Vue 3 + TypeScript (Vite). Tailwind CSS with CSS custom properties for per-hotel theming. Leaflet + OpenStreetMap for the map.
+- **Backend:** Node.js + TypeScript. Specific framework, ORM, and typed API approach to be confirmed early in cycle 1.
+- **Database:** PostgreSQL.
+- **Hosting:** EU-hosted (Hetzner Cloud or equivalent). Docker-based.
 - **CI/CD:** GitHub Actions.
-- **AI capabilities:** Anthropic API (Claude), used only by modules that require it (not MVP).
+- **AI capabilities:** Anthropic API (Claude), used only by modules that require it (not core MVP).
 
 # Data sources
 
