@@ -1,35 +1,42 @@
 import { Router } from 'express';
-import { PrismaClient } from '../generated/prisma/client';
-import { PrismaPg } from '@prisma/adapter-pg';
+import { prisma } from '../lib/prisma';
 import { hotelPatchSchema } from '../schemas/hotel.schema';
-import { requireAuth } from '../middleware/requireAuth';
-
-const adapter = new PrismaPg({ connectionString: process.env.DATABASE_URL });
-const prisma = new PrismaClient({ adapter });
 
 const router = Router();
 
-router.get('/me', requireAuth, async (req, res) => {
-  const email = req.user?.email;
-  if (!email) return res.status(401).json({ error: 'Unauthorized' });
+function getSupabaseUserIdFromHeader(authHeader: string | undefined): string | null {
+  if (!authHeader?.startsWith('Bearer ')) return null;
+  const id = authHeader.slice('Bearer '.length).trim();
+  return id || null;
+}
+
+router.get('/me', async (req, res) => {
+  const supabaseUserId = getSupabaseUserIdFromHeader(req.headers.authorization);
+  if (!supabaseUserId) {
+    return res.status(401).json({ error: 'Missing or invalid Authorization header' });
+  }
 
   const user = await prisma.user.findUnique({
-    where: { email },
-    include: { hotel: { include: { settings: true } } },
+    where: { supabaseUserId },
+    include: { hotel: { select: { slug: true } } },
   });
-  if (!user?.hotel) return res.status(404).json({ error: 'Hotel not found' });
-  return res.json(user.hotel);
+  if (!user?.hotel) return res.status(404).json({ error: 'User not found' });
+  return res.json(user.hotel.slug);
 });
 
-router.patch('/me', requireAuth, async (req, res) => {
-  const email = req.user?.email;
-  if (!email) return res.status(401).json({ error: 'Unauthorized' });
+router.patch('/me', async (req, res) => {
+  const supabaseUserId = getSupabaseUserIdFromHeader(req.headers.authorization);
+  if (!supabaseUserId) {
+    return res.status(401).json({ error: 'Missing or invalid Authorization header' });
+  }
 
   const parsed = hotelPatchSchema.safeParse(req.body);
-  if (!parsed.success) return res.status(400).json({ error: 'Invalid request body' });
+  if (!parsed.success) {
+    return res.status(400).json({ error: 'Invalid request body', issues: parsed.error.flatten() });
+  }
 
-  const user = await prisma.user.findUnique({ where: { email } });
-  if (!user) return res.status(404).json({ error: 'Hotel not found' });
+  const user = await prisma.user.findUnique({ where: { supabaseUserId } });
+  if (!user) return res.status(404).json({ error: 'User not found' });
 
   const hotel = await prisma.hotel.update({
     where: { id: user.hotelId },
