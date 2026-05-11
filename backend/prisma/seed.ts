@@ -7,22 +7,18 @@
 // also note that:
 //   prisma migrate reset  — nukes DB, re-runs all migrations, re-seeds. When in doubt, just reset. 
 
-import { PrismaClient } from '../src/generated/prisma/client'
-import { PrismaPg } from '@prisma/adapter-pg'
-
-const adapter = new PrismaPg({ connectionString: process.env.DATABASE_URL })
-const prisma = new PrismaClient({ adapter })
+import { prisma } from '../src/lib/prisma'
 
 async function main() {
   console.log('Seeding…')
 
   // ════════ HOTEL 1 — Adam's ════════════════════════════════════════
   const adam = await prisma.hotel.upsert({
-    where: { slug: 'adam-hotel' },     
+    where: { slug: 'adalinos' },
     update: {},
     create: {
       id: 'H001',                      // hardcoded for MVP
-      slug: 'adam-hotel',
+      slug: 'adalinos',
       name: "Adalino's Bunny Hotelino",                      
       description: 'The best rabbit getaway carrots can buy.',                 
       address: '11 Sonnenreich Weg, Osttirol, Österreich',                     
@@ -75,68 +71,13 @@ async function main() {
   })
   console.log(`  ✓ ${adam.slug}  (${adam.id})`)
 
-  // ════════ HOTEL 2 — Dario's ════════════════════════════════════════
-  const dario = await prisma.hotel.upsert({
-    where: { slug: 'dario-hotel' },
-    update: {},
-    create: {
-      id: 'H002',
-      slug: 'dario-hotel',
-      name: '',
-      description: '',
-      address: '',
-      logoUrl: '',
-
-      settings: {
-        create: {
-          colorPalette: '',
-          bgImages: '',
-          fontPair: '',
-        },
-      },
-
-      modules: {
-        create: [
-          {
-            view: 'about',
-            position: 0,
-            content: {
-              welcomeMessage: '',
-              checkIn: '',
-              checkOut: '',
-              breakfast: '',
-              wifiName: '',
-              wifiPassword: '',
-              receptionPhone: '',
-            },
-          },
-          {
-            view: 'map',
-            position: 1,
-            content: {
-              pois: [],
-            },
-          },
-          {
-            view: 'guestbook',
-            position: 2,
-            content: {
-              entries: [],
-            },
-          },
-        ],
-      },
-    },
-  })
-  console.log(`  ✓ ${dario.slug}  (${dario.id})`)
-
   // ════════ HOTEL 3 — Jon's ══════════════════════════════════════════
   const jon = await prisma.hotel.upsert({
-    where: { slug: 'jon-hotel' },
+    where: { slug: 'lepaindore' },
     update: {},
     create: {
       id: 'H003',
-      slug: 'jon-hotel',
+      slug: 'lepaindore',
       name: 'Le Pain Doré',
       description: 'A baguette-themed boutique hotel in the heart of Paris.',
       address: 'Paris, France',        
@@ -191,13 +132,21 @@ async function main() {
   await prisma.user.upsert({
     where: { email: 'alfred@adalinos.com' },
     update: {},
-    create: { email: 'alfred@adalinos.com', hotelId: 'H001' },
+    create: {
+      supabaseUserId: '5ffdde55-255b-46d2-9b21-56c7925e7e21',
+      email: 'alfred@adalinos.com',
+      hotelId: 'H001',
+    },
   })
 
   await prisma.user.upsert({
     where: { email: 'alfred@lepaindore.fr' },
     update: {},
-    create: { email: 'alfred@lepaindore.fr', hotelId: 'H003' },
+    create: {
+      supabaseUserId: '02e9ddd3-a38f-44f7-adee-db4f4ab3a0e7',
+      email: 'alfred@lepaindore.fr',
+      hotelId: 'H003',
+    },
   })
 
   console.log('Seed complete.')
