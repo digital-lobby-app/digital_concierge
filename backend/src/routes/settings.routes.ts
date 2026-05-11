@@ -1,6 +1,6 @@
 import { Router } from 'express';
 import { prisma } from '../lib/prisma';
-import { hotelPatchSchema } from '../schemas/hotel.schema';
+import { settingsPatchSchema } from '../schemas/settings.schema';
 
 const router = Router();
 
@@ -18,10 +18,11 @@ router.get('/me', async (req, res) => {
 
   const user = await prisma.user.findUnique({
     where: { supabaseUserId },
-    include: { hotel: { select: { slug: true } } },
+    include: { hotel: { include: { settings: true } } },
   });
-  if (!user?.hotel) return res.status(404).json({ error: 'User not found' });
-  return res.json(user.hotel.slug);
+  if (!user) return res.status(404).json({ error: 'User not found' });
+  if (!user.hotel?.settings) return res.status(404).json({ error: 'Settings not found' });
+  return res.json(user.hotel.settings);
 });
 
 router.patch('/me', async (req, res) => {
@@ -30,7 +31,7 @@ router.patch('/me', async (req, res) => {
     return res.status(401).json({ error: 'Missing or invalid Authorization header' });
   }
 
-  const parsed = hotelPatchSchema.safeParse(req.body);
+  const parsed = settingsPatchSchema.safeParse(req.body);
   if (!parsed.success) {
     return res.status(400).json({ error: 'Invalid request body', issues: parsed.error.flatten() });
   }
@@ -38,23 +39,11 @@ router.patch('/me', async (req, res) => {
   const user = await prisma.user.findUnique({ where: { supabaseUserId } });
   if (!user) return res.status(404).json({ error: 'User not found' });
 
-  const hotel = await prisma.hotel.update({
-    where: { id: user.hotelId },
+  const settings = await prisma.settings.update({
+    where: { hotelId: user.hotelId },
     data: parsed.data,
   });
-  return res.json(hotel);
-});
-
-router.get('/:slug', async (req, res) => {
-  const hotel = await prisma.hotel.findUnique({
-    where: { slug: req.params.slug },
-    include: {
-      settings: true,
-      modules: { orderBy: { position: 'asc' } },
-    },
-  });
-  if (!hotel) return res.status(404).json({ error: 'Hotel not found' });
-  return res.json(hotel);
+  return res.json(settings);
 });
 
 export default router;
