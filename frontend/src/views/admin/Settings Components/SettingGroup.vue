@@ -30,7 +30,7 @@
 <style lang="css" scoped>
   h3 {
     font-size: 0.75rem;
-    font-family: "Inter", sans-serif;
+    font-family: var(--font-body);
     font-weight: 400;
     padding-bottom: 0.5rem;
   }

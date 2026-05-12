@@ -11,8 +11,7 @@
   const HotelInfo: SettingBtnList = [{
     panelId: 'hotel-info',
     icon: IconHomeCog,
-    icon_stroke_color:'#35559a',
-    icon_bg_color: '#e6ebf5',
+    icon_tint: 1,
     text_heading: 'Name and Info',
     text_body: 'Set the main information of your hotel.'
   }]
@@ -21,24 +20,21 @@
   {
     panelId: 'colors',
     icon: IconPalette,
-    icon_stroke_color:'#dea15b',
-    icon_bg_color: '#fef2e4',
+    icon_tint: 2,
     text_heading: 'Color scheme',
     text_body: 'Choose your portal\'s colors.'
   },
   {
     panelId: 'typography',
     icon: IconTypography,
-    icon_stroke_color: '#564a8d',
-    icon_bg_color: '#ece8f7',
+    icon_tint: 3,
     text_heading: 'Typography',
     text_body: 'Set the fonts style for texts.'
   },
   {
     panelId: 'background',
     icon: IconPolaroid,
-    icon_stroke_color:'#577b65',
-    icon_bg_color: '#eaf2ec',
+    icon_tint: 4,
     text_heading: 'Background images',
     text_body: 'Select your desired atmosphere.'
   },
