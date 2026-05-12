@@ -3,7 +3,7 @@ import { computed, ref } from 'vue'
 import { useRoute } from 'vue-router'
 import GuestDashboardView from '@/views/guest/GuestDashboardView.vue'
 import { useOverlayBack } from '@/composables/useSlideOverlay'
-import { IconArrowLeft } from '@tabler/icons-vue'
+import { IconX } from '@tabler/icons-vue'
 import gsap from 'gsap'
 
 const { back } = useOverlayBack()
@@ -17,7 +17,23 @@ const currentDragY = ref(0)
 const isDragging = ref(false)
 const CLOSE_THRESHOLD = 120 // px dragged to trigger close
 const DRAG_ZONE_HEIGHT = 80 // px from top of overlay that initiates drag
+const backdropEl = ref<HTMLElement | null>(null)
 
+//backdrop
+function onBackdropEnter(el: Element, done: () => void) {
+  gsap.fromTo(el,
+    { opacity: 0 },
+    { opacity: 1, duration: 0.9, ease: 'power2.inOut', onComplete: done }
+  )
+}
+
+function onBackdropLeave(el: Element, done: () => void) {
+  gsap.to(el, { opacity: 0, duration: 0.4, ease: 'power3.inOut', onComplete: done })
+}
+
+
+
+//
 function isMobileOrTablet() {
   return window.innerWidth <= 1024
 }
@@ -43,6 +59,11 @@ function onTouchMove(e: TouchEvent) {
   if (delta < 0) return // don't allow dragging up
 
   currentDragY.value = delta
+
+  if (backdropEl.value) {
+  const progress = Math.max(0, 1 - delta / 400)
+  backdropEl.value.style.opacity = String(progress)
+}
 
    if (overlayEl.value) {
     // Apply resistance: feel heavier as you drag more
@@ -138,6 +159,14 @@ function onContentLeave(el: Element, done: () => void) {
   <GuestDashboardView />
 
   <Teleport to="body">
+    <Transition :css="false" @enter="onBackdropEnter" @leave="onBackdropLeave">
+    <div
+      v-if="isOverlay"
+      ref="backdropEl"
+      class="overlay-backdrop"
+      @click="back"
+    />
+  </Transition>
     <Transition
       :css="false"
       @enter="onEnter"
@@ -155,8 +184,7 @@ function onContentLeave(el: Element, done: () => void) {
           <div class="drag-handle" aria-hidden="true" />
 
           <button class="back-btn" @click="back">
-            <IconArrowLeft class="icon" stroke={2} />
-            <span>Back</span>
+            <IconX class="icon" stroke={2} />
           </button>
         </div>
 
@@ -176,21 +204,31 @@ function onContentLeave(el: Element, done: () => void) {
 </template>
 
 <style scoped>
+
 .overlay {
   position: fixed;
   inset: 1rem 1rem 0 1rem;
   border-radius: 20px 20px 0 0;
   z-index: 50;
   overflow: hidden;
-  background: white;
+  background: var(--bg);
   display: flex;
   flex-direction: column;
   will-change: transform;
 }
 
+.overlay-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.5);
+  z-index: 49;
+  will-change: opacity;
+}
+
 .module-header {
-  flex-shrink: 0;
-  padding: 1.25rem 1.5rem;
+  display: flex;
+  justify-content: flex-end;
+  padding: 0.5rem 0.5rem;
   touch-action: none;
 }
 
@@ -199,7 +237,7 @@ function onContentLeave(el: Element, done: () => void) {
   width: 36px;
   height: 4px;
   border-radius: 999px;
-  background: #d1d5db;
+  background: var(--text);
   margin: 0 auto 0.75rem;
 }
 
@@ -208,6 +246,9 @@ function onContentLeave(el: Element, done: () => void) {
   overflow-y: auto;
   padding: 0rem 1rem;
 }
+.content::-webkit-scrollbar {
+    display: none;
+  }
 
 .back-btn {
   display: inline-flex;
@@ -216,7 +257,7 @@ function onContentLeave(el: Element, done: () => void) {
   padding: 0.7rem 1rem;
   border: none;
   border-radius: 999px;
-  background: whitesmoke;
+  background: var(--bg);
   color: black;
   cursor: pointer;
 }
@@ -243,6 +284,9 @@ function onContentLeave(el: Element, done: () => void) {
   .overlay {
     inset: 2rem 0.4rem 0 0.4rem;
     border-radius: 16px 16px 0 0;
+  }
+  .content {
+    padding-bottom: 2rem;
   }
 
   .module-header {
