@@ -204,7 +204,6 @@ function onContentLeave(el: Element, done: () => void) {
 </template>
 
 <style scoped>
-
 .overlay {
   position: fixed;
   inset: 1rem 1rem 0 1rem;
