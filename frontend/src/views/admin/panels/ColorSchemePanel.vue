@@ -2,7 +2,7 @@
   import { storeToRefs } from 'pinia';
   import { useThemeStore, type ThemeId } from '@/stores/themeStore';
   import type { ColorSchemeBtn }  from '../setting-types';
-  import { IconChevronRightFilled } from '@tabler/icons-vue';
+  import { IconChevronRightFilled, IconCheck } from '@tabler/icons-vue';
 
   const themeStore = useThemeStore()
   const { currentTheme } = storeToRefs(themeStore)
@@ -79,6 +79,7 @@
         v-for="opt in ThemeOptions"
         :key="opt.theme_id"
         class="theme-row"
+        :class="{ selected: opt.theme_id === currentTheme}"
         @click="updateTheme(opt.theme_id as ThemeId)"
       >
         <span
@@ -93,7 +94,16 @@
 
         <span class="theme-text">{{ opt.text_heading }}</span>
 
-        <IconChevronRightFilled class="theme-chevron" stroke="1.5" />
+        <IconCheck
+          v-if="opt.theme_id === currentTheme"
+          class="theme-chevron selected"
+          stroke="1.5"
+        />
+
+        <IconChevronRightFilled
+        v-else
+        class="theme-chevron" stroke="1.5"
+        />
       </button>
     </div>
   </div>
@@ -122,15 +132,26 @@
   cursor: pointer;
 }
 
+.theme-row.selected {
+  border: 2px solid var(--secondary);
+}
+
 .theme-text {
   flex: 1;
-  font-family: "Inter", sans-serif;
+  font-family: var(--font-body);
   font-size: 0.95rem;
 }
 
 .theme-chevron {
   width: 1.25rem;
   height: 1.25rem;
+}
+
+.theme-chevron.selected {
+  background-color: var(--secondary);
+  border-radius: 50%;
+  height: 1.45rem;
+  width: 1.45rem;;
 }
 
 .palette-circle {

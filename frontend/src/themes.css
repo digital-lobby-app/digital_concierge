@@ -67,6 +67,15 @@
   --bg: #F6F8FB;
   --surface: #FFFFFF;
   --text: #1A1F2B;
+  --soft-1: color-mix(in oklab, var(--primary) 24%, var(--bg));
+  --soft-2: color-mix(in oklab, var(--secondary) 24%, var(--bg));
+  --soft-3: color-mix(in oklab, var(--accent) 14%, var(--bg));
+  --soft-4: color-mix(in oklab, var(--text) 11%, var(--bg));
+  /* currently not being used: */
+  --soft-stroke-1: color-mix(in oklab, var(--primary) 72%, var(--text));
+  --soft-stroke-2: color-mix(in oklab, var(--secondary) 92%, var(--text));
+  --soft-stroke-3: color-mix(in oklab, var(--accent) 78%, var(--text));
+  --soft-stroke-4: color-mix(in oklab, var(--text) 85%, var(--bg));
 }
 
 [data-theme="ocean"] {
@@ -182,4 +191,46 @@
 
 
 /* Images: */
-/* TODO: img section */
+[data-bg="ocean"] {
+  --bg-image: url("/frontend/src/assets/bg-imgs/ocean-bg-imgs/mobile/ocean-bg-m-1.png");
+}
+
+[data-bg="warm"] {
+  --bg-image: url("/frontend/src/assets/bg-imgs/warm-bg-imgs/mobile/warm-bg-1.png");
+}
+
+[data-bg="nature"] {
+  --bg-image: url("/frontend/src/assets/bg-imgs/nature-bg-imgs/mobile/nature-bg-1.png");
+}
+
+[data-bg="night"] {
+  --bg-image: url("/frontend/src/assets/bg-imgs/night-bg-imgs/mobile/night-bg-1.png");
+}
+
+[data-bg="soft"] {
+  --bg-image: url("/frontend/src/assets/bg-imgs/ocean-bg-imgs/mobile/");
+}
+
+[data-bg="obsidian"] {
+  --bg-image: url("/frontend/src/assets/bg-imgs/ocean-bg-imgs/mobile/");
+}
+
+[data-bg="sunset"] {
+  --bg-image: url("/frontend/src/assets/bg-imgs/ocean-bg-imgs/mobile/");
+}
+
+[data-bg="forest"] {
+  --bg-image: url("/frontend/src/assets/bg-imgs/ocean-bg-imgs/mobile/");
+}
+
+[data-bg="royal"] {
+  --bg-image: url("/frontend/src/assets/bg-imgs/ocean-bg-imgs/mobile/");
+}
+
+[data-bg="ice"] {
+  --bg-image: url("/frontend/src/assets/bg-imgs/ocean-bg-imgs/mobile/");
+}
+
+[data-bg="desert"] {
+  --bg-image: url("/frontend/src/assets/bg-imgs/ocean-bg-imgs/mobile/");
+}
