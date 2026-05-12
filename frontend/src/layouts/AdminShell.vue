@@ -4,10 +4,10 @@ import { useDraggable } from '@vueuse/core';
 import SettingsView from '@/views/admin/SettingsView.vue';
 import { IconSettings, IconX } from '@tabler/icons-vue'
 import { useHotelStore } from '@/stores/hotel';
-import { useThemeStore } from '@/stores/themeStore';
-import { storeToRefs } from 'pinia';
 import { useFontPairStore } from '@/stores/fontPair';
 import { useBgImgStore } from '@/stores/backgroundImages';
+import { storeToRefs } from 'pinia';
+import { useThemeStore } from '@/stores/themeStore';
 
 
 const hotel = useHotelStore()
