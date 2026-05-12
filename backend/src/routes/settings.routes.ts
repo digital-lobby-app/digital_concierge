@@ -10,19 +10,14 @@ function getSupabaseUserIdFromHeader(authHeader: string | undefined): string | n
   return id || null;
 }
 
-router.get('/me', async (req, res) => {
-  const supabaseUserId = getSupabaseUserIdFromHeader(req.headers.authorization);
-  if (!supabaseUserId) {
-    return res.status(401).json({ error: 'Missing or invalid Authorization header' });
-  }
-
-  const user = await prisma.user.findUnique({
-    where: { supabaseUserId },
-    include: { hotel: { include: { settings: true } } },
+router.get('/:slug', async (req, res) => {
+  const hotel = await prisma.hotel.findUnique({
+    where: { slug: req.params.slug },
+    include: { settings: true },
   });
-  if (!user) return res.status(404).json({ error: 'User not found' });
-  if (!user.hotel?.settings) return res.status(404).json({ error: 'Settings not found' });
-  return res.json(user.hotel.settings);
+  if (!hotel) return res.status(404).json({ error: 'Hotel not found' });
+  if (!hotel.settings) return res.status(404).json({ error: 'Settings not found' });
+  return res.json(hotel.settings);
 });
 
 router.patch('/me', async (req, res) => {
