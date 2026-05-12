@@ -6,8 +6,7 @@ import type { PanelId } from '../setting-types';
 defineProps<{
   panelId: PanelId
   icon: Component
-  icon_bg_color: string
-  icon_stroke_color: string
+  icon_tint: 1 | 2 | 3 | 4
   text_heading: string
   text_body: string
 }>()
@@ -18,8 +17,8 @@ const emit = defineEmits<{ (e: "select", panelId: PanelId): void }>()
 
 <template>
     <button class="config-btn" @click="emit('select', panelId)">
-      <div id="icon-wrapper" :style="{ backgroundColor: icon_bg_color }">
-        <component class="btn-icon" :is="icon" :stroke="1.5" :color="icon_stroke_color"/>
+      <div id="icon-wrapper" :style="{ backgroundColor: `var(--soft-${icon_tint})`, color: `var(--fixer)` }">
+        <component class="btn-icon" :is="icon" :stroke="1.5" />
       </div>
       <div class="config-txt">
         <h4 class="config-txt-header">{{ text_heading }}</h4>
@@ -37,7 +36,7 @@ const emit = defineEmits<{ (e: "select", panelId: PanelId): void }>()
     gap: 1rem;
     align-items: center;
     font-size: 0.85rem;
-    font-family: "Inter", sans-serif;
+    font-family: var(--font-body);
     background-color: var(--surface);
     color: var(--text);
   }
@@ -55,7 +54,7 @@ const emit = defineEmits<{ (e: "select", panelId: PanelId): void }>()
   .btn-icon {
     height: 2rem;
     min-width: 2rem;
-    color: var(--text)
+    color: inherit;
   }
 
   .config-txt{
