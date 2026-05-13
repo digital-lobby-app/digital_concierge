@@ -5,11 +5,6 @@ import { aboutModulePatchSchema } from '../schemas/modules.schema'
 
 const router = Router();
 
-router.use((req, _res, next) => {
-  console.log("HOTELS ROUTER HIT:", req.method, req.originalUrl)
-  next()
-})
-
 function getSupabaseUserIdFromHeader(authHeader: string | undefined): string | null {
   if (!authHeader?.startsWith('Bearer ')) return null;
   const id = authHeader.slice('Bearer '.length).trim();
