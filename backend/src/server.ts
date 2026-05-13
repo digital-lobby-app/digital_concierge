@@ -2,6 +2,7 @@ import 'dotenv/config';
 import express, { Application } from 'express';
 import cors from 'cors';
 import authRoutes from './routes/auth.routes';
+import chatbotRoutes from './routes/chatbot.routes';
 import hotelsRoutes from './routes/hotels.routes';
 import poisRoutes from './routes/pois.routes';
 import reviewsRoutes from './routes/reviews.routes';
@@ -15,6 +16,7 @@ app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 
 app.use('/auth', authRoutes);
+app.use('/hotels/:slug/chatbot', chatbotRoutes);
 app.use('/hotels/:slug/pois', poisRoutes);
 app.use('/hotels/:slug/reviews', reviewsRoutes);
 app.use('/hotels', hotelsRoutes);
