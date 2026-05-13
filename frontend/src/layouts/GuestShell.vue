@@ -184,7 +184,7 @@ function onContentLeave(el: Element, done: () => void) {
           <div class="drag-handle" aria-hidden="true" />
 
           <button class="back-btn" @click="back">
-            <IconX class="icon" stroke={2} />
+            <IconX class="icon" stroke="2" />
           </button>
         </div>
 
@@ -254,10 +254,8 @@ function onContentLeave(el: Element, done: () => void) {
   align-items: center;
   gap: 0.5rem;
   padding: 0.7rem 1rem;
-  border: none;
-  border-radius: 999px;
-  background: var(--bg);
-  color: black;
+  color: var(--text);
+  background: none;
   cursor: pointer;
 }
 
