@@ -2,12 +2,32 @@
 import { useRouter } from 'vue-router'
 import { useHotelStore } from '@/stores/hotel'
 import { IconInfoCircle, IconMap2, IconBook, IconToolsKitchen3 } from '@tabler/icons-vue'
-import oceanBg from '@/assets/bg-imgs/ocean-bg-imgs/mobile/ocean-bg-m-1.png'
+import { ref, watch } from 'vue'
+import { storeToRefs } from 'pinia'
+import { useBgImgStore } from '@/stores/backgroundImages'
 import gsap from 'gsap'
 
 const router = useRouter()
 const hotel = useHotelStore()
 const iconStroke = "1.5"
+const bgStore = useBgImgStore()
+const { currentBgImg } = storeToRefs(bgStore)
+
+function setImgUrl(set: string, n: number) {
+  return new URL (
+    `../../assets/bg-imgs/${set}-bg-imgs/mobile/${set}-bg-${n}.png`,
+    import.meta.url
+  ).href
+}
+
+const pickedBgUrl = ref('')
+
+function repickBgUrl(){
+  const bgImgOptions = [1, 2, 3, 4, 5].map((n) => setImgUrl(currentBgImg.value, n))
+  pickedBgUrl.value = bgImgOptions[Math.floor(Math.random() * bgImgOptions.length)]
+}
+
+watch(currentBgImg, repickBgUrl, { immediate: true })
 
 function goTo(page: string) {
   router.push(`/${hotel.slug}/${page}`)
@@ -38,7 +58,7 @@ function onEnter() {
 
 <template>
   <Transition :css="false" @enter="onEnter" appear>
-  <div id="main-container" :style="{ backgroundImage: `url(${oceanBg})` }">
+  <div id="main-container" :style="{ backgroundImage: `url(${pickedBgUrl})` }">
     <div id="main-txt">
       <h1 class="main-header text-anim">Welcome</h1>
       <p class="main-p text-anim">We're here to make your stay exceptional</p>
@@ -112,12 +132,12 @@ function onEnter() {
   height: 2.5rem;
   width: 2.5rem;
 }
-/* TODO: remove hard-coded fonts/theme colors */
+
 h1 {
-  font-family: "Playfair Display", serif;
+  font-family: var(--font-heading);
 }
 
 p {
-  font-family: "Inter", sans-serif;
+  font-family: var(--font-body);
 }
 </style>
