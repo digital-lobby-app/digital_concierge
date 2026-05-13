@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { useRouter } from 'vue-router'
 import { useHotelStore } from '@/stores/hotel'
-import { IconInfoCircle, IconMap2, IconBook, IconToolsKitchen3 } from '@tabler/icons-vue'
+import { IconInfoCircle, IconMap2, IconBook, IconMessageChatbot } from '@tabler/icons-vue'
 import { ref, watch } from 'vue'
 import { storeToRefs } from 'pinia'
 import { useBgImgStore } from '@/stores/backgroundImages'
@@ -73,7 +73,7 @@ function onEnter() {
         <p class="btn-txt">Explore</p>
       </button>
       <button class="dash-btn" @click="goTo('services')">
-        <i class="btn-icon"><IconToolsKitchen3 :stroke="iconStroke" /></i>
+        <i class="btn-icon"><IconMessageChatbot :stroke="iconStroke" /></i>
         <p class="btn-txt">Services</p>
       </button>
       <button class="dash-btn" @click="goTo('requests')">
