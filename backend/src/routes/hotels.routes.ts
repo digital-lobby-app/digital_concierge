@@ -1,14 +1,9 @@
 import { Router } from 'express';
 import { prisma } from '../lib/prisma';
 import { hotelPatchSchema } from '../schemas/hotel.schema';
+import { getSupabaseUserIdFromHeader } from '../lib/adminGuard';
 
 const router = Router();
-
-function getSupabaseUserIdFromHeader(authHeader: string | undefined): string | null {
-  if (!authHeader?.startsWith('Bearer ')) return null;
-  const id = authHeader.slice('Bearer '.length).trim();
-  return id || null;
-}
 
 router.get('/me', async (req, res) => {
   const supabaseUserId = getSupabaseUserIdFromHeader(req.headers.authorization);

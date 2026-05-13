@@ -7,8 +7,10 @@ import 'leaflet/dist/leaflet.css';
 import { useHotelStore } from '@/stores/hotel';
 import { useAuthStore } from '@/stores/auth';
 import { adminAuth } from '@/services/auth.service';
-import { createPoi, deletePoi, createReview, deleteReview, fetchSlugById } from '@/services/hotel.service';
-import type { Poi, PoiCategory, Review } from '@/services/hotel.service';
+import { createPoi, deletePoi, fetchSlugById } from '@/services/hotel.service';
+import type { Poi, PoiCategory } from '@/services/hotel.service';
+import { createMapReview, deleteMapReview } from '@/services/review.service';
+import type { Review } from '@/services/review.service';
 
 import MapFilterChips from '@/components/map/MapFilterChips.vue';
 import AddPoiModal from '@/components/map/AddPoiModal.vue';
@@ -389,7 +391,7 @@ async function onReviewSubmit(payload: { rating: number; comment: string; review
   if (hotel.slug === undefined || reviewModalPoiId.value === null) return;
   const poiId = reviewModalPoiId.value;
   try {
-    const newReview = await createReview(hotel.slug, poiId, payload);
+    const newReview = await createMapReview(hotel.slug, poiId, payload);
     const poi = hotel.pois.find((p) => p.id === poiId);
     if (poi !== undefined) {
       poi.reviews.push(newReview);
@@ -399,7 +401,7 @@ async function onReviewSubmit(payload: { rating: number; comment: string; review
     reviewModalPoiId.value = null;
     reviewModalPoiName.value = '';
   } catch (err) {
-    console.error('createReview failed:', err);
+    console.error('createMapReview failed:', err);
   }
 }
 
@@ -407,14 +409,14 @@ async function onReviewDelete(poiId: string, reviewId: string) {
   if (hotel.slug === undefined || auth.user === null) return;
   if (!confirm('Delete this review?')) return;
   try {
-    await deleteReview(hotel.slug, poiId, reviewId, auth.user.id);
+    await deleteMapReview(hotel.slug, reviewId, auth.user.id);
     const poi = hotel.pois.find((p) => p.id === poiId);
     if (poi !== undefined) {
       poi.reviews = poi.reviews.filter((r) => r.id !== reviewId);
     }
     refreshPopupForPoi(poiId);
   } catch (err) {
-    console.error('deleteReview failed:', err);
+    console.error('deleteMapReview failed:', err);
   }
 }
 

@@ -13,13 +13,6 @@ export const poiCreateSchema = z.object({
   reviewerName: z.string().trim().min(1).max(16).optional(),
 });
 
-export const reviewCreateSchema = z.object({
-  rating: z.number().int().min(1).max(5),
-  comment: z.string().trim().min(1).max(128),
-  reviewerName: z.string().trim().min(1).max(16).optional(),
-});
-
 export type PoiCategory = z.infer<typeof poiCategory>;
 export type PoiSource = z.infer<typeof poiSource>;
 export type PoiCreateInput = z.infer<typeof poiCreateSchema>;
-export type ReviewCreateInput = z.infer<typeof reviewCreateSchema>;
