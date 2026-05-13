@@ -2,21 +2,18 @@ import { Router } from 'express';
 import { prisma } from '../lib/prisma';
 import { getSupabaseUserIdFromHeader, isAdminOfHotel } from '../lib/adminGuard';
 import { poiCreateSchema } from '../schemas/poi.schema';
-import * as poiStore from '../lib/poiMockStore';
-import * as reviewStore from '../lib/reviewMockStore';
 
 const router = Router({ mergeParams: true });
 
 router.get('/', async (req, res) => {
   const slug = (req.params as { slug?: string }).slug ?? '';
-  const pois = await poiStore.listPoisBySlug(slug);
-  const hydrated = await Promise.all(
-    pois.map(async (p) => ({
-      ...p,
-      reviews: await reviewStore.listReviews(slug, { type: 'map', poiId: p.id }),
-    })),
-  );
-  return res.json(hydrated);
+  const pois = await prisma.poi.findMany({
+    where: { hotel: { slug } },
+    include: {
+      reviews: { where: { type: 'map' }, orderBy: { createdAt: 'desc' } },
+    },
+  });
+  return res.json(pois);
 });
 
 router.post('/', async (req, res) => {
@@ -38,25 +35,29 @@ router.post('/', async (req, res) => {
   }
 
   try {
-    const poi = await poiStore.createPoi({
-      slug,
-      hotelId: hotel.id,
-      category: parsed.data.category,
-      latitude: parsed.data.latitude,
-      longitude: parsed.data.longitude,
-      name: parsed.data.name,
-      source: isAdmin ? 'admin' : 'guest',
-      comment: isAdmin ? (parsed.data.comment ?? null) : null,
+    const poi = await prisma.poi.create({
+      data: {
+        hotelId: hotel.id,
+        category: parsed.data.category,
+        latitude: parsed.data.latitude,
+        longitude: parsed.data.longitude,
+        name: parsed.data.name,
+        source: isAdmin ? 'admin' : 'guest',
+        comment: isAdmin ? (parsed.data.comment ?? null) : null,
+      },
     });
 
-    let reviews: Awaited<ReturnType<typeof reviewStore.listReviews>> = [];
+    let reviews: Awaited<ReturnType<typeof prisma.review.findMany>> = [];
     if (!isAdmin) {
-      const review = await reviewStore.createReview(slug, hotel.id, {
-        type: 'map',
-        poiId: poi.id,
-        rating: parsed.data.rating as number,
-        comment: parsed.data.comment as string,
-        reviewerName: parsed.data.reviewerName,
+      const review = await prisma.review.create({
+        data: {
+          hotelId: hotel.id,
+          type: 'map',
+          poiId: poi.id,
+          rating: parsed.data.rating as number,
+          comment: parsed.data.comment as string,
+          reviewerName: parsed.data.reviewerName ?? null,
+        },
       });
       reviews = [review];
     }
@@ -82,9 +83,16 @@ router.delete('/:poiId', async (req, res) => {
   const isAdmin = await isAdminOfHotel(supabaseUserId, hotel.id);
   if (!isAdmin) return res.status(403).json({ error: 'Forbidden' });
 
-  const deleted = await poiStore.deletePoi(slugStr, poiId);
-  if (!deleted) return res.status(404).json({ error: 'POI not found' });
-  return res.status(204).end();
+  try {
+    await prisma.poi.delete({ where: { id: poiId } });
+    return res.status(204).end();
+  } catch (err) {
+    if ((err as { code?: string }).code === 'P2025') {
+      return res.status(404).json({ error: 'POI not found' });
+    }
+    console.error('deletePoi failed:', err);
+    return res.status(500).json({ error: 'Failed to delete POI' });
+  }
 });
 
 export default router;
