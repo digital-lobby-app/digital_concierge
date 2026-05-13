@@ -8,11 +8,11 @@ export const useAuthStore = defineStore('auth', () => {
   const refreshToken = ref<string | null>(null);
   const expiresAt = ref<number | null>(null);
 
-  const isAuthenticated = computed(() => !!accessToken.value);
   const isExpired = computed(() => {
     if (!expiresAt.value) return true;
     return Date.now() >= expiresAt.value * 1000;
   });
+  const isAuthenticated = computed(() => !!accessToken.value && !isExpired.value);
 
   function setSession(data: SessionData) {
     user.value = data.user;
