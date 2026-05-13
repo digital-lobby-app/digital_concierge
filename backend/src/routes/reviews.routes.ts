@@ -2,8 +2,6 @@ import { Router } from 'express';
 import { prisma } from '../lib/prisma';
 import { getSupabaseUserIdFromHeader, isAdminOfHotel } from '../lib/adminGuard';
 import { reviewCreateSchema, reviewListFilterSchema } from '../schemas/review.schema';
-import * as poiStore from '../lib/poiMockStore';
-import * as reviewStore from '../lib/reviewMockStore';
 
 const router = Router({ mergeParams: true });
 
@@ -13,7 +11,15 @@ router.get('/', async (req, res) => {
   if (!parsed.success) {
     return res.status(400).json({ error: 'Invalid filter', issues: parsed.error.flatten() });
   }
-  return res.json(await reviewStore.listReviews(slug, parsed.data));
+  const reviews = await prisma.review.findMany({
+    where: {
+      hotel: { slug },
+      type: parsed.data.type,
+      ...(parsed.data.type === 'map' ? { poiId: parsed.data.poiId } : {}),
+    },
+    orderBy: { createdAt: 'desc' },
+  });
+  return res.json(reviews);
 });
 
 router.post('/', async (req, res) => {
@@ -28,12 +34,33 @@ router.post('/', async (req, res) => {
   if (!hotel) return res.status(404).json({ error: 'Hotel not found' });
 
   if (parsed.data.type === 'map') {
-    const poi = await poiStore.findPoi(slug, parsed.data.poiId);
+    const poi = await prisma.poi.findFirst({
+      where: { id: parsed.data.poiId, hotelId: hotel.id },
+    });
     if (poi === null) return res.status(404).json({ error: 'POI not found' });
   }
 
   try {
-    const review = await reviewStore.createReview(slug, hotel.id, parsed.data);
+    const review = await prisma.review.create({
+      data:
+        parsed.data.type === 'map'
+          ? {
+              hotelId: hotel.id,
+              type: 'map',
+              poiId: parsed.data.poiId,
+              rating: parsed.data.rating,
+              comment: parsed.data.comment,
+              reviewerName: parsed.data.reviewerName ?? null,
+            }
+          : {
+              hotelId: hotel.id,
+              type: 'guestbook',
+              poiId: null,
+              rating: null,
+              comment: parsed.data.comment,
+              reviewerName: parsed.data.reviewerName ?? null,
+            },
+    });
     return res.status(201).json(review);
   } catch (err) {
     console.error('createReview failed:', err);
@@ -56,9 +83,16 @@ router.delete('/:reviewId', async (req, res) => {
   const isAdmin = await isAdminOfHotel(supabaseUserId, hotel.id);
   if (!isAdmin) return res.status(403).json({ error: 'Forbidden' });
 
-  const deleted = await reviewStore.deleteReview(slugStr, reviewId);
-  if (!deleted) return res.status(404).json({ error: 'Review not found' });
-  return res.status(204).end();
+  try {
+    await prisma.review.delete({ where: { id: reviewId } });
+    return res.status(204).end();
+  } catch (err) {
+    if ((err as { code?: string }).code === 'P2025') {
+      return res.status(404).json({ error: 'Review not found' });
+    }
+    console.error('deleteReview failed:', err);
+    return res.status(500).json({ error: 'Failed to delete review' });
+  }
 });
 
 export default router;

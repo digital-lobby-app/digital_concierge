@@ -27,6 +27,23 @@ enum ModuleKind {
   guestbook
 }
 
+enum PoiCategory {
+  restaurant
+  sports
+  attraction
+  shopping
+}
+
+enum PoiSource {
+  admin
+  guest
+}
+
+enum ReviewType {
+  map
+  guestbook
+}
+
 // ─────────────────────────────────────────────────────────────────────────
 // Models
 // ─────────────────────────────────────────────────────────────────────────
@@ -48,6 +65,8 @@ model Hotel {
   users    User[]
   settings Settings?
   modules  Module[]
+  pois     Poi[]
+  reviews  Review[]
 }
 
 /// Hotel admin identity. One row per Supabase auth user.
@@ -86,4 +105,37 @@ model Module {
 
   hotelId String
   hotel   Hotel  @relation(fields: [hotelId], references: [id])
+}
+
+/// Point of interest on a hotel's map. Created by admin or guest.
+model Poi {
+  id        String      @id @default(uuid())
+  category  PoiCategory
+  latitude  Float
+  longitude Float
+  name      String
+  comment   String?
+  source    PoiSource
+  createdAt DateTime    @default(now())
+  updatedAt DateTime    @updatedAt
+
+  hotelId String
+  hotel   Hotel    @relation(fields: [hotelId], references: [id])
+  reviews Review[]
+}
+
+/// Map review (tied to a POI) or guestbook entry (no POI).
+model Review {
+  id           String     @id @default(uuid())
+  type         ReviewType
+  rating       Int?
+  comment      String
+  reviewerName String?
+  createdAt    DateTime   @default(now())
+
+  hotelId String
+  hotel   Hotel  @relation(fields: [hotelId], references: [id])
+
+  poiId String?
+  poi   Poi?    @relation(fields: [poiId], references: [id], onDelete: Cascade)
 }
