@@ -92,3 +92,30 @@ export async function fetchSlugById(userId: string): Promise<string> {
   })
   return z.string().parse(slug)
 }
+
+export async function patchAboutModuleMe(
+  supabaseUserId: string,
+  payload: {
+    hotelName?: string
+    content: {
+      welcomeMessage: string
+      checkIn: string
+      checkOut: string
+      breakfast: string
+      wifiName: string
+      wifiPassword: string
+      receptionPhone: string
+    }
+  }
+) {
+  const data = await apiRequest<unknown>(`/hotels/me/modules/about`, {
+    method: "PATCH",
+    headers: {
+      Authorization: `Bearer ${supabaseUserId}`,
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(payload),
+  })
+
+  return moduleSchema.parse(data)
+}

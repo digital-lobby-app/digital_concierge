@@ -8,6 +8,7 @@
   import HotelInfoPanel from './panels/HotelInfoPanel.vue';
   import BackgroundPanel from './panels/BackgroundPanel.vue';
 
+
   const HotelInfo: SettingBtnList = [{
     panelId: 'hotel-info',
     icon: IconHomeCog,
@@ -56,7 +57,9 @@
     <SettingGroup title="APPEARANCE" :items="HotelAppearance" @select="activePanel = $event"/>
   </div>
   <div v-else class="setting-group-container">
-    <component :is="panels[activePanel]" />
+    <component
+    :is="panels[activePanel]"
+    />
     <button id="back-btn" @click="activePanel = 'root'">
       <IconArrowBackUp stroke='2' />
     </button>
@@ -80,6 +83,6 @@
   border-radius: var(--main-border-radius);
   min-height: 3rem;
   background-color: var(--secondary);
-  color: var(--bg);
+  color: var(--icon-on-primary);
 }
 </style>

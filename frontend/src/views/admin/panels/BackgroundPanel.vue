@@ -11,6 +11,13 @@ function updateBgImg(bgImg: BgImgId) {
   bgImgStore.setBgImg(bgImg)
 }
 
+function bgThumbUrl(bgId: BgImgId) {
+  return new URL(
+    `../../../assets/bg-imgs/${bgId}-bg-imgs/mobile/${bgId}-bg-1.png`,
+    import.meta.url
+  ).href
+}
+
 const bgImgOptions: BgImgBtn[] = [
  {
     bg_img_id: "ocean",
@@ -82,6 +89,7 @@ const bgImgOptions: BgImgBtn[] = [
         :class="{ selected: opt.bg_img_id === currentBgImg }"
         @click="updateBgImg(opt.bg_img_id as BgImgId)"
       >
+      <img class="bg-thumb" :src="bgThumbUrl(opt.bg_img_id)" alt="A background representation of selected theme">
         <div class="bg-text">
           <p class="bg-heading">{{ opt.bg_img_heading }}</p>
           <p class="bg-desc">{{ opt.bg_img_description }}</p>
@@ -157,6 +165,16 @@ const bgImgOptions: BgImgBtn[] = [
   border-radius: 50%;
   height: 1.45rem;
   width: 1.45rem;
+  color: var(--icon-on-primary);
+}
+
+.bg-thumb{
+  width: 3.25rem;
+  height: 4.5rem;
+  border-radius: 12px;
+  object-fit: cover;
+  flex: 0 0 auto;
+  border: 1px solid rgba(0,0,0,0.08);
 }
 
 </style>
