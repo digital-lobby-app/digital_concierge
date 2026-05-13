@@ -1,0 +1,64 @@
+import { Router } from 'express';
+import { prisma } from '../lib/prisma';
+import { getSupabaseUserIdFromHeader, isAdminOfHotel } from '../lib/adminGuard';
+import { reviewCreateSchema, reviewListFilterSchema } from '../schemas/review.schema';
+import * as poiStore from '../lib/poiMockStore';
+import * as reviewStore from '../lib/reviewMockStore';
+
+const router = Router({ mergeParams: true });
+
+router.get('/', async (req, res) => {
+  const slug = (req.params as { slug?: string }).slug ?? '';
+  const parsed = reviewListFilterSchema.safeParse(req.query);
+  if (!parsed.success) {
+    return res.status(400).json({ error: 'Invalid filter', issues: parsed.error.flatten() });
+  }
+  return res.json(await reviewStore.listReviews(slug, parsed.data));
+});
+
+router.post('/', async (req, res) => {
+  const slug = (req.params as { slug?: string }).slug ?? '';
+
+  const parsed = reviewCreateSchema.safeParse(req.body);
+  if (!parsed.success) {
+    return res.status(400).json({ error: 'Invalid request body', issues: parsed.error.flatten() });
+  }
+
+  const hotel = await prisma.hotel.findUnique({ where: { slug } });
+  if (!hotel) return res.status(404).json({ error: 'Hotel not found' });
+
+  if (parsed.data.type === 'map') {
+    const poi = await poiStore.findPoi(slug, parsed.data.poiId);
+    if (poi === null) return res.status(404).json({ error: 'POI not found' });
+  }
+
+  try {
+    const review = await reviewStore.createReview(slug, hotel.id, parsed.data);
+    return res.status(201).json(review);
+  } catch (err) {
+    console.error('createReview failed:', err);
+    return res.status(500).json({ error: 'Failed to create review' });
+  }
+});
+
+router.delete('/:reviewId', async (req, res) => {
+  const { slug, reviewId } = req.params as { slug?: string; reviewId: string };
+  const slugStr = slug ?? '';
+
+  const supabaseUserId = getSupabaseUserIdFromHeader(req.headers.authorization);
+  if (supabaseUserId === null) {
+    return res.status(401).json({ error: 'Missing or invalid Authorization header' });
+  }
+
+  const hotel = await prisma.hotel.findUnique({ where: { slug: slugStr } });
+  if (!hotel) return res.status(404).json({ error: 'Hotel not found' });
+
+  const isAdmin = await isAdminOfHotel(supabaseUserId, hotel.id);
+  if (!isAdmin) return res.status(403).json({ error: 'Forbidden' });
+
+  const deleted = await reviewStore.deleteReview(slugStr, reviewId);
+  if (!deleted) return res.status(404).json({ error: 'Review not found' });
+  return res.status(204).end();
+});
+
+export default router;
