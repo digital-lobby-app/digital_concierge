@@ -1,5 +1,108 @@
 <script setup lang="ts">
 import { IconSend } from '@tabler/icons-vue';
+import gsap from 'gsap';
+import { nextTick, onMounted, ref } from 'vue';
+import { useHotelStore } from '@/stores/hotel';
+import { postQuestionToChatbot } from '@/services/chatbot.service';
+import Messages, { type Message } from '@/components/chatbot/Messages.vue';
+
+const dotRef = ref<HTMLElement | null>(null)
+const messagesContainerRef = ref<HTMLElement | null>(null)
+
+const hotel = useHotelStore();
+
+const draft = ref('')
+const isSending = ref(false)
+
+const messages = ref<Message[]>([
+  {
+    id: crypto.randomUUID(),
+    role: 'assistant',
+    content: `Hi! I'm Alfred from ${hotel.name ?? 'the hotel'}. How can I help you today?`,
+  },
+])
+
+onMounted(() => {
+  const tl = gsap.timeline()
+  tl.fromTo(dotRef.value,
+    { opacity: 0.6 },
+    { opacity: 1, duration: 1, ease: 'power3.in', repeat: -1, yoyo: true }
+  )
+})
+
+function scrollToBottom() {
+  nextTick(() => {
+    const el = messagesContainerRef.value
+    if (el) el.scrollTop = el.scrollHeight
+  })
+}
+
+async function fetchAssistantReply(userMessage: string): Promise<string> {
+  if (!hotel.slug) {
+    throw new Error('Hotel slug is missing — cannot call chatbot.')
+  }
+  const { reply } = await postQuestionToChatbot(hotel.slug, userMessage)
+  return reply
+}
+
+async function sendMessage() {
+  const text = draft.value.trim()
+  if (!text || isSending.value) return
+
+  // Pin message directly
+  const userMsg: Message = {
+    id: crypto.randomUUID(),
+    role: 'user',
+    content: text,
+  }
+  messages.value.push(userMsg)
+  draft.value = ''
+  scrollToBottom()
+
+  // show pending bubble
+  const pendingId = crypto.randomUUID()
+  messages.value.push({
+    id: pendingId,
+    role: 'assistant',
+    content: '',
+    pending: true,
+  })
+  scrollToBottom()
+
+  // call backend + swap reply
+  isSending.value = true
+  try {
+    const reply = await fetchAssistantReply(text)
+    const idx = messages.value.findIndex(m => m.id === pendingId)
+    if (idx !== -1) {
+      messages.value[idx] = {
+        id: pendingId,
+        role: 'assistant',
+        content: reply,
+      }
+    }
+  } catch (err) {
+    console.error(err)
+    const idx = messages.value.findIndex(m => m.id === pendingId)
+    if (idx !== -1) {
+      messages.value[idx] = {
+        id: pendingId,
+        role: 'assistant',
+        content: 'Sorry, something went wrong reaching the server. Please try again.',
+      }
+    }
+  } finally {
+    isSending.value = false
+    scrollToBottom()
+  }
+}
+
+function onInputKeydown(e: KeyboardEvent) {
+  if (e.key === 'Enter' && !e.shiftKey) {
+    e.preventDefault()
+    sendMessage()
+  }
+}
 </script>
 
 <template>
@@ -12,32 +115,39 @@ import { IconSend } from '@tabler/icons-vue';
         alt="alfred"
       />
       <div class="header-info-box">
-        <h3>Hotel name is here</h3>
+        <h3>{{ hotel.name }}</h3>
         <div class="header-info-subline">
-          <div class="header-dot" />
+          <div ref="dotRef" class="header-dot" />
           <p class="header-status">online</p>
         </div>
       </div>
     </header>
 
-  
-    <div class="chat-messages">
-      <div class="message-row user">
-        <div class="bubble">Hey alfred, can you help me?</div>
-      </div>
-      <div class="message-row assistant">
-        <div class="bubble">Of course! What do you need?</div>
-      </div>
-      <div class="message-row user">
-        <div class="bubble">Just checking how this looks.</div>
-      </div>
+    <div ref="messagesContainerRef" class="chat-messages">
+      <Messages
+        v-for="msg in messages"
+        :key="msg.id"
+        :message="msg"
+      />
     </div>
 
-
     <footer class="chat-input-bar">
-      <textarea class="chat-input" placeholder="Type a message…" rows="1" />
-      <button class="send-btn" aria-label="Send">
-        <IconSend stroke={1} />
+      <textarea
+        ref="inputRef"
+        v-model="draft"
+        class="chat-input"
+        placeholder="Type a message…"
+        rows="1"
+        :disabled="isSending"
+        @keydown="onInputKeydown"
+      />
+      <button
+        class="send-btn"
+        aria-label="Send"
+        :disabled="isSending || !draft.trim()"
+        @click="sendMessage"
+      >
+        <IconSend stroke="1" />
       </button>
     </footer>
   </div>
@@ -64,6 +174,7 @@ import { IconSend } from '@tabler/icons-vue';
   display: inline-flex;
   flex-direction: column;
 }
+
 .header-info-subline {
   display: inline-flex;
   align-items: center;
@@ -93,39 +204,20 @@ import { IconSend } from '@tabler/icons-vue';
   display: flex;
   flex-direction: column;
   gap: 0.6rem;
+  padding: 0.5rem 0rem;
 }
-
-
-.message-row {
-  display: flex;
-}
-
-.message-row.user      { justify-content: flex-end; }
-.message-row.assistant { justify-content: flex-start; }
-
-.bubble {
-  padding: 0.65rem 1rem;
-  border-radius: 8px;
-}
-
-.message-row.user .bubble {
-  background: var(--accent);
-  color: var(--font);
-  border-bottom-right-radius: 0px;
-}
-
-.message-row.assistant .bubble {
-  background: var(--text);
-  color: var(--bg);
-  border-bottom-left-radius: 0px;
+.chat-messages::-webkit-scrollbar {
+  display: none;
 }
 
 /* input bar */
 .chat-input-bar {
   display: flex;
   align-items: center;
+  justify-content: center;
   gap: 0.6rem;
-  padding: 1rem 0.5rem;
+  padding: 0rem 0.5rem;
+  margin: 2rem 0rem;
   flex-shrink: 0;
 }
 
@@ -137,6 +229,9 @@ import { IconSend } from '@tabler/icons-vue';
   padding: 0.6rem 0.9rem;
   resize: none;
   outline: none;
+  border: none;
+  font-family: inherit;
+  font-size: inherit;
 }
 
 .send-btn {
@@ -151,5 +246,12 @@ import { IconSend } from '@tabler/icons-vue';
   align-items: center;
   justify-content: center;
   cursor: pointer;
+}
+
+@media (max-width: 768px) {
+
+  .chat-input-bar {
+    margin: 0.4rem 0rem;
+  }
 }
 </style>
