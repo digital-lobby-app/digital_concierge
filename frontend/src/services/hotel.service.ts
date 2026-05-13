@@ -59,6 +59,52 @@ const hotelSettingsSchema = z.object({
   updatedAt: z.coerce.date(),
 })
 
+// reviews
+
+const reviewSchema = z.object({
+  id: z.string(),
+  poiId: z.string(),
+  rating: z.number().int().min(1).max(5),
+  comment: z.string().min(1).max(128),
+  reviewerName: z.string().max(16).nullable(),
+  createdAt: z.coerce.date(),
+})
+
+export type Review = z.infer<typeof reviewSchema>
+export type ReviewCreateInput = {
+  rating: number
+  comment: string
+  reviewerName?: string
+}
+
+// pois
+
+const poiSchema = z.object({
+  id: z.string(),
+  hotelId: z.string(),
+  category: z.enum(['restaurant', 'sports', 'attraction', 'shopping']),
+  latitude: z.number(),
+  longitude: z.number(),
+  name: z.string().min(1).max(32),
+  comment: z.string().max(128).nullable(),
+  source: z.enum(['admin', 'guest']),
+  reviews: z.array(reviewSchema).default([]),
+  createdAt: z.coerce.date(),
+  updatedAt: z.coerce.date(),
+})
+
+export type Poi = z.infer<typeof poiSchema>
+export type PoiCategory = z.infer<typeof poiSchema>['category']
+export type PoiCreateInput = {
+  category: PoiCategory
+  latitude: number
+  longitude: number
+  name: string
+  rating?: number
+  comment?: string
+  reviewerName?: string
+}
+
 // hotel
 
 const hotelSchema = z.object({
@@ -91,4 +137,61 @@ export async function fetchSlugById(userId: string): Promise<string> {
     headers: { Authorization: `Bearer ${userId}` },
   })
   return z.string().parse(slug)
+}
+
+// POI and Review API — wraps the backend router. The backend currently serves from an
+// in-memory mock store (see backend/src/lib/poiMockStore.ts); Phase 2 swaps it for Prisma
+// without changing this layer.
+
+export async function fetchPoisBySlug(slug: string): Promise<Poi[]> {
+  const data = await apiRequest<unknown>(`/hotels/${slug}/pois`)
+  return z.array(poiSchema).parse(data)
+}
+
+export async function createPoi(
+  slug: string,
+  input: PoiCreateInput,
+  userId?: string
+): Promise<Poi> {
+  const data = await apiRequest<unknown>(`/hotels/${slug}/pois`, {
+    method: 'POST',
+    headers: userId !== undefined ? { Authorization: `Bearer ${userId}` } : {},
+    body: JSON.stringify(input),
+  })
+  return poiSchema.parse(data)
+}
+
+export async function deletePoi(
+  slug: string,
+  poiId: string,
+  userId: string
+): Promise<void> {
+  await apiRequest<void>(`/hotels/${slug}/pois/${poiId}`, {
+    method: 'DELETE',
+    headers: { Authorization: `Bearer ${userId}` },
+  })
+}
+
+export async function createReview(
+  slug: string,
+  poiId: string,
+  input: ReviewCreateInput
+): Promise<Review> {
+  const data = await apiRequest<unknown>(`/hotels/${slug}/pois/${poiId}/reviews`, {
+    method: 'POST',
+    body: JSON.stringify(input),
+  })
+  return reviewSchema.parse(data)
+}
+
+export async function deleteReview(
+  slug: string,
+  poiId: string,
+  reviewId: string,
+  userId: string
+): Promise<void> {
+  await apiRequest<void>(`/hotels/${slug}/pois/${poiId}/reviews/${reviewId}`, {
+    method: 'DELETE',
+    headers: { Authorization: `Bearer ${userId}` },
+  })
 }

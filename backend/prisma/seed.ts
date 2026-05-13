@@ -25,7 +25,7 @@ async function main() {
       logoUrl: '',                     // TBD — path to static asset, e.g. /logos/adam.png
       latitude: 46.77694526380854,
       longitude: 12.917673716739909,
-      mapZoom: 14,
+      mapZoom: 15,
 
       settings: {
         create: {
@@ -84,7 +84,7 @@ async function main() {
       logoUrl: '',
       latitude: 48.85367587564214,
       longitude: 2.3364627421438335,
-      mapZoom: 14,
+      mapZoom: 15,
 
       settings: {
         create: {

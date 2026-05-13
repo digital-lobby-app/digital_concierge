@@ -3,6 +3,7 @@ import express, { Application } from 'express';
 import cors from 'cors';
 import authRoutes from './routes/auth.routes';
 import hotelsRoutes from './routes/hotels.routes';
+import poisRoutes from './routes/pois.routes';
 import settingsRoutes from './routes/settings.routes'; // when we are ready
 
 const app: Application = express();
@@ -13,6 +14,7 @@ app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 
 app.use('/auth', authRoutes);
+app.use('/hotels/:slug/pois', poisRoutes);
 app.use('/hotels', hotelsRoutes);
 app.use('/settings', settingsRoutes); // when we are ready
 
