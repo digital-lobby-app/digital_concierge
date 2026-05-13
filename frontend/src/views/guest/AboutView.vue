@@ -6,9 +6,19 @@ import {
   IconPhone,
 } from '@tabler/icons-vue';
 import { useHotelStore } from '@/stores/hotel';
+import { computed, onMounted, onUnmounted, ref } from 'vue';
 
 const hotel = useHotelStore()
 const aboutContent = hotel.aboutContent.content
+
+const SCREEN_WIDTH_MAX = 520;
+const windowWidth = ref(window.innerWidth)
+
+const onResize = () => { windowWidth.value = window.innerWidth }
+onMounted(() => window.addEventListener('resize', onResize))
+onUnmounted(() => window.removeEventListener('resize', onResize))
+
+const isMobile = computed(() => windowWidth.value <= SCREEN_WIDTH_MAX)
 </script>
 
 <template>
@@ -20,6 +30,7 @@ const aboutContent = hotel.aboutContent.content
           {{ aboutContent.welcomeMessage }}
         </p>
       </header>
+
 
       <div class="sections">
         <section class="hotel-section">
@@ -60,10 +71,16 @@ const aboutContent = hotel.aboutContent.content
           </dl>
         </section>
       </div>
-
-      <footer class="hotel-footer">
-        <a href='tel: {{ aboutContent.phoneNumber }}'>
+      <footer v-if="isMobile" class="welcome-footer">
+        <a class="call-button" :href="`tel:${aboutContent.receptionPhone}`">
           <IconPhone :size="18" stroke="1.5" /> Call Reception
+        </a>
+      </footer>
+      <footer v-else class="welcome-footer">
+        <p>Please call us for more information!</p>
+        <a class="call-button" :href="`tel:${aboutContent.receptionPhone}`">
+          <IconPhone :size="16" stroke="1.5" />
+          {{ aboutContent.receptionPhone }}
         </a>
       </footer>
     </div>
@@ -99,27 +116,32 @@ const aboutContent = hotel.aboutContent.content
   margin: 0;
   font-size: 0.95rem;
   line-height: 1.55;
+  width: 28rem;
 }
 
 /* Sections */
 .sections {
   display: flex;
-  flex-direction: column;
+  flex-direction: row;
   gap: 0.75rem;
   margin-bottom: 1.5rem;
 }
 
 .hotel-section {
+  flex: 1;
   border: 1px solid var(--secondary);
   border-radius: 12px;
-  padding: 1rem 1.25rem;
+  padding: 0.6rem 1rem;
   background: var(--surface);
 }
 
 .hotel-section h3 {
-  margin: 0 0 0.75rem;
   display: flex;
   align-items: center;
+  justify-content: center;
+  margin-bottom: 1.5rem;
+  padding-bottom: 0.6rem;
+  border-bottom: 1px solid var(--secondary);
   gap: 0.5rem;
   font-size: 0.78rem;
   font-weight: 600;
@@ -130,6 +152,7 @@ const aboutContent = hotel.aboutContent.content
 
 dl {
   margin: 0;
+  margin: 0 0 2rem 0;
   display: flex;
   flex-direction: column;
   gap: 0.5rem;
@@ -154,20 +177,53 @@ dd {
 }
 
 /* Footer */
-.hotel-footer {
+.welcome-footer {
   display: flex;
-  justify-content: center;
+  flex-direction: column;
+  gap: 1rem;
+  justify-content: flex-start;
+  margin-bottom: 2rem;
 }
 
-.hotel-footer a {
+.call-button {
   display: inline-flex;
   align-items: center;
+  justify-content: center;
   gap: 0.5rem;
+  width: 13rem;
   padding: 0.85rem 1.75rem;
   background: var(--secondary);
   color: var(--text);
   border-radius: 999px;
   text-decoration: none;
   font-size: 0.95rem;
+  white-space: nowrap;
+}
+
+
+/* mobile adaption */
+
+@media (max-width: 768px) {
+  .sections {
+    flex-direction: column;
+  }
+  .hotel-section {
+    padding: 1rem 1.25rem;
+  }
+  .welcome-footer {
+    justify-content: center;
+  }
+  .dl {
+    margin: 0 0 0 0;
+  }
+  .hotel-header p {
+    width: 100%;
+  }
+}
+
+@media (max-width: 520px) {
+  .welcome-footer {
+    flex-direction: row;
+  }
 }
 </style>

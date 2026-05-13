@@ -68,8 +68,7 @@ function onContentLeave(el: Element, done: () => void) {
       <div v-if="isOverlay" class="overlay">
         <div class="module-header">
           <button class="back-btn" @click="back">
-            <IconArrowLeft class="icon" stroke={2} />
-            <span>Back</span>
+            <IconX class="icon" stroke="2" />
           </button>
         </div>
 
@@ -117,11 +116,8 @@ function onContentLeave(el: Element, done: () => void) {
   gap: 0.5rem;
 
   padding: 0.7rem 1rem;
-  border: none;
-  border-radius: 999px;
-
-  background: whitesmoke;
-  color: black;
+  color: var(--text);
+  background: none;
   cursor: pointer;
 }
 
