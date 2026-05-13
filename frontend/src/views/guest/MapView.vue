@@ -21,6 +21,9 @@ const hotel = useHotelStore();
 const auth = useAuthStore();
 
 const mapEl = ref<HTMLDivElement | null>(null);
+const showPressHint = ref(false);
+let pressHintShowTimer: ReturnType<typeof setTimeout> | null = null;
+let pressHintHideTimer: ReturnType<typeof setTimeout> | null = null;
 
 let map: L.Map | null = null;
 const markersById = new Map<string, L.Marker>();
@@ -466,7 +469,7 @@ onMounted(() => {
   map = L.map(mapEl.value);
   map.setView([hotel.latitude, hotel.longitude], hotel.mapZoom);
 
-  const tiles = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+  const tiles = L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', {
     attribution: '© OpenStreetMap contributors',
     maxZoom: 19,
     maxNativeZoom: 19,
@@ -505,11 +508,27 @@ onMounted(() => {
     markersById.set(poi.id, marker);
   }
 
+  pressHintShowTimer = setTimeout(() => {
+    showPressHint.value = true;
+    pressHintHideTimer = setTimeout(() => {
+      showPressHint.value = false;
+    }, 6000);
+  }, 2000);
+
   map.on('contextmenu', onMapContextmenu);
   map.getContainer().addEventListener('contextmenu', preventNativeContextMenu);
 });
 
 onUnmounted(() => {
+    if (pressHintShowTimer !== null) {
+      clearTimeout(pressHintShowTimer);
+      pressHintShowTimer = null;
+    }
+    if (pressHintHideTimer !== null) {
+      clearTimeout(pressHintHideTimer);
+      pressHintHideTimer = null;
+    }
+
   if (resizeObserver !== null) {
     resizeObserver.disconnect();
     resizeObserver = null;
@@ -535,8 +554,9 @@ onUnmounted(() => {
       <MapFilterChips :selected="selectedCategories" @toggle="toggleCategory" />
     </div>
 
-    <div v-show="mode === 'view'" class="press-hint">
-      Right-click (desktop) or long-press (mobile) the map to {{ isHotelAdmin ? 'add' : 'recommend' }} a place
+    <div v-show="mode === 'view' && showPressHint" class="press-hint">
+      Right-click (desktop) or long-press (mobile) the map to
+      {{ isHotelAdmin ? 'add' : 'recommend' }} a place
     </div>
 
     <AddPoiModal
@@ -590,7 +610,7 @@ onUnmounted(() => {
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
   pointer-events: none;
   opacity: 0.92;
-  white-space: nowrap;
+  white-space: wrap;
 }
 
 :deep(.hotel-pin) {
