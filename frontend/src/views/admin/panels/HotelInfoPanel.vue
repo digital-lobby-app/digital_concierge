@@ -55,6 +55,7 @@ watch(
 const saving = ref(false)
 
 async function onSave() {
+  saving.value = true
   try {
     const supabaseUserId = user.value?.id
     if (!supabaseUserId) {
@@ -78,7 +79,7 @@ async function onSave() {
     console.error(e)
     alert("Save failed. Check console.")
   } finally {
-    router.back()
+    saving.value = false
   }
 }
 

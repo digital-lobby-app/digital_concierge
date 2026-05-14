@@ -71,8 +71,9 @@
   --soft-2: color-mix(in oklab, var(--secondary) 24%, var(--bg));
   --soft-3: color-mix(in oklab, var(--accent) 14%, var(--bg));
   --soft-4: color-mix(in oklab, var(--text) 11%, var(--bg));
-  --glass: color-mix(in oklab, var(--bg) 35%, transparent);
-  --glass-border: color-mix(in oklab, var(--text) 15%, transparent);
+  --glass: color-mix(in oklab, var(--surface) 75%, transparent);
+  --glass-border: color-mix(in oklab, var(--surface) 25%, transparent);
+  --glass-accent: color-mix(in oklab, var(--accent) 75%, transparent);
   /* currently not being used: */
   --soft-stroke-1: color-mix(in oklab, var(--primary) 72%, var(--text));
   --soft-stroke-2: color-mix(in oklab, var(--secondary) 92%, var(--text));
