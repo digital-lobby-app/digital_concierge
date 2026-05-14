@@ -87,17 +87,13 @@ const handleLogin = async () => {
       {{ loading ? "loading..." : "Login" }}
     </button>
   </form>
-  <button @click="guestLogin">Guest login</button>
+  <!-- <button @click="guestLogin">Guest login</button> -->
 </template>
 
 <style lang="css" scoped>
 form {
-  margin: 0;
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-  width: 100%;
-  padding: 4rem 0rem;
+  display: grid;
+  gap: 1.2rem;
 }
 
 .input-wrapper {
@@ -118,13 +114,15 @@ input {
   border: 0.5px solid lightgrey;
   padding: 1rem;
   padding-left: 4rem;
+  background-color: #123A66;
 }
 
 button {
   margin-top: 1rem;
   padding: 1rem;
   color: white;
-  background-color: rgb(15, 10, 76);
+  background:
+    linear-gradient(180deg, #175496 0%,  #236cb9 100%);
   border-radius: 8px;
 }
 .toggle-password {
