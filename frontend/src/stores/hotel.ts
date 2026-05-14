@@ -1,6 +1,6 @@
 import { defineStore } from 'pinia'
 import { ref } from 'vue'
-import { fetchHotelBySlug, fetchPoisBySlug, fetchSlugById } from '@/services/hotel.service'
+import { fetchHotelBySlug, fetchPoisBySlug, fetchSlugById, patchAboutModuleMe } from '@/services/hotel.service'
 import type { Poi } from '@/services/hotel.service'
 
 export const useHotelStore = defineStore('hotel', () => {
@@ -49,5 +49,43 @@ export const useHotelStore = defineStore('hotel', () => {
   }
 }
 
-  return { loaded, slug, name, description, latitude, longitude, mapZoom, aboutContent, mapContent, guestBookContent, pois, fetchBySlug, fetchBySession }
+async function saveAboutContent(
+  supabaseUserId: string,
+  payload: {
+    hotelName?: string
+    welcomeMessage: string
+    receptionPhone: string
+    checkIn: string
+    checkOut: string
+    breakfast: string
+    wifiName: string
+    wifiPassword: string
+  }
+) {
+  const updated = await patchAboutModuleMe(supabaseUserId, {
+    hotelName: payload.hotelName,
+    content: {
+      welcomeMessage: payload.welcomeMessage,
+      receptionPhone: payload.receptionPhone,
+      checkIn: payload.checkIn,
+      checkOut: payload.checkOut,
+      breakfast: payload.breakfast,
+      wifiName: payload.wifiName,
+      wifiPassword: payload.wifiPassword,
+    },
+  })
+
+  if (payload.hotelName) name.value = payload.hotelName
+
+  if (aboutContent.value) {
+    aboutContent.value = {
+      ...aboutContent.value,
+      content: { ...aboutContent.value.content, ...payload },
+    }
+  }
+
+  return updated
+}
+
+  return { loaded, slug, name, description, latitude, longitude, mapZoom, aboutContent, mapContent, fetchBySlug, fetchBySession, saveAboutContent }
 })

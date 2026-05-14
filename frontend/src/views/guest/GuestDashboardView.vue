@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { useRouter } from 'vue-router'
 import { useHotelStore } from '@/stores/hotel'
-import { IconInfoCircle, IconMap2, IconBook, IconMessageChatbot } from '@tabler/icons-vue'
+import { IconMap2, IconBook, IconMessageChatbot,IconPhone } from '@tabler/icons-vue'
 import { ref, watch } from 'vue'
 import { storeToRefs } from 'pinia'
 import { useBgImgStore } from '@/stores/backgroundImages'
@@ -61,12 +61,12 @@ function onEnter() {
   <div id="main-container" :style="{ backgroundImage: `url(${pickedBgUrl})` }">
     <div id="main-txt">
       <h1 class="main-header text-anim">Welcome</h1>
-      <p class="main-p text-anim">We're here to make your stay exceptional</p>
+      <p class="main-p text-anim"><span class="hl">We're here to make your stay exceptional</span></p>
     </div>
     <div id="dash-btns">
       <button class="dash-btn" @click="goTo('about')">
-        <i class="btn-icon"> <IconInfoCircle :stroke="iconStroke" /> </i>
-        <p class="btn-txt">About Us</p>
+        <i class="btn-icon"> <IconToolsKitchen3 :stroke="iconStroke" /> </i>
+        <p class="btn-txt">Our Info</p>
       </button>
       <button class="dash-btn" @click="goTo('map')">
         <i class="btn-icon"><IconMap2 :stroke="iconStroke" /></i>
@@ -74,7 +74,7 @@ function onEnter() {
       </button>
       <button class="dash-btn" @click="goTo('services')">
         <i class="btn-icon"><IconMessageChatbot :stroke="iconStroke" /></i>
-        <p class="btn-txt">Services</p>
+        <p class="btn-txt">Chat</p>
       </button>
       <button class="dash-btn" @click="goTo('requests')">
         <i class="btn-icon"><IconBook :stroke="iconStroke" /></i>
@@ -98,7 +98,7 @@ function onEnter() {
 }
 
 #main-txt {
-  color: var(--primary);
+  color: var(--fixer);
 }
 
 .main-header {
@@ -140,4 +140,34 @@ h1 {
 p {
   font-family: var(--font-body);
 }
+
+.main-header,
+.main-p {
+  position: relative;
+  display: inline-block;
+  z-index: 0;
+}
+
+.main-header::before {
+  content: "";
+  position: absolute;
+
+  height: 2rem;
+  bottom: 0.85rem;
+  width: calc(100% + 1rem);
+
+  background: var(--bg);
+  border-radius: 0.2em;
+
+  z-index: -1;
+}
+
+.hl{
+  background: var(--bg);
+  box-decoration-break: clone;
+  -webkit-box-decoration-break: clone;
+  padding: 0 0.5rem;
+  border-radius: 1rem;
+}
+
 </style>

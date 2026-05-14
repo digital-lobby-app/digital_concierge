@@ -173,7 +173,8 @@
   background-color: var(--secondary);
   border-radius: 50%;
   height: 1.45rem;
-  width: 1.45rem;;
+  width: 1.45rem;
+  color: var(--icon-on-primary);
 }
 
 #comma {
