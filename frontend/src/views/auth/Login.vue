@@ -39,58 +39,62 @@ const handleLogin = async () => {
 }
 </script>
 <template>
-  <form @submit.prevent="handleLogin">
-    <div>
-      <label>Email address</label>
-      <div class="input-wrapper">
-        <IconMail class="icon" />
-        <input
-          v-model="email"
-          type="email"
-          placeholder="you@example.com"
-          required
-        />
+  <div id="form-wrapper">
+
+    <form @submit.prevent="handleLogin">
+      <div>
+        <label>Email address</label>
+        <div class="input-wrapper">
+          <IconMail class="icon" />
+          <input
+            v-model="email"
+            type="email"
+            placeholder="you@example.com"
+            required
+          />
+        </div>
       </div>
-    </div>
 
-    <div>
-      <label>Password</label>
-      <div class="input-wrapper">
-        <IconLock class="icon" />
+      <div>
+        <label>Password</label>
+        <div class="input-wrapper">
+          <IconLock class="icon" />
 
-        <input
-          v-model="password"
-          :type="showPassword ? 'text' : 'password'"
-          placeholder="Enter your password"
-          minlength="6"
-          maxlength="20"
-          oninvalid="this.setCustomValidity('Password too short')"
-          oninput="this.setCustomValidity('')"
-          pattern="^(?=.*[A-Z])(?=.*\d).+$"
-          required
-        />
+          <input
+            v-model="password"
+            :type="showPassword ? 'text' : 'password'"
+            placeholder="Enter your password"
+            minlength="6"
+            maxlength="20"
+            oninvalid="this.setCustomValidity('Password too short')"
+            oninput="this.setCustomValidity('')"
+            pattern="^(?=.*[A-Z])(?=.*\d).+$"
+            required
+          />
 
-        <button
-          type="button"
-          class="toggle-password"
-          @click="showPassword = !showPassword"
-        >
-          <IconEye class="icon" v-if="!showPassword" />
-          <IconEyeOff class="icon" v-else />
-        </button>
+          <button
+            type="button"
+            class="toggle-password"
+            @click="showPassword = !showPassword"
+          >
+            <IconEye class="icon" v-if="!showPassword" />
+            <IconEyeOff class="icon" v-else />
+          </button>
+        </div>
       </div>
-    </div>
 
-    <p v-if="errorMessage">{{ errorMessage }}</p>
+      <p v-if="errorMessage">{{ errorMessage }}</p>
 
-    <button :disabled="loading">
-      {{ loading ? "loading..." : "Login" }}
-    </button>
-  </form>
+      <button :disabled="loading">
+        {{ loading ? "loading..." : "Login" }}
+      </button>
+    </form>
+  </div>
   <!-- <button @click="guestLogin">Guest login</button> -->
 </template>
 
 <style lang="css" scoped>
+
 form {
   display: grid;
   gap: 1.2rem;
@@ -115,6 +119,7 @@ input {
   padding: 1rem;
   padding-left: 4rem;
   background-color: #123A66;
+  color: aliceblue;
 }
 
 button {
