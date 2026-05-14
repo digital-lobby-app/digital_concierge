@@ -59,6 +59,7 @@
   <div v-else class="setting-group-container">
     <component
     :is="panels[activePanel]"
+    @back="activePanel = 'root'"
     />
     <button id="back-btn" @click="activePanel = 'root'">
       <IconArrowBackUp stroke='2' />
