@@ -243,7 +243,6 @@ function onContentLeave(el: Element, done: () => void) {
 .content {
   flex: 1;
   overflow-y: auto;
-  padding: 0rem 1rem;
 }
 .content::-webkit-scrollbar {
     display: none;
@@ -281,9 +280,6 @@ function onContentLeave(el: Element, done: () => void) {
   .overlay {
     inset: 2rem 0.4rem 0 0.4rem;
     border-radius: 16px 16px 0 0;
-  }
-  .content {
-    padding-bottom: 2rem;
   }
 
   .module-header {
