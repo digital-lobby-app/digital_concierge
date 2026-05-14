@@ -10,7 +10,9 @@ import { ref, watch } from 'vue'
 import { storeToRefs } from 'pinia'
 import { useHotelStore } from '@/stores/hotel'
 import { useAuthStore } from '@/stores/auth'
+import router from '@/router/index';
 
+const emit = defineEmits<{ back: [] }>()
 
 const hotelStore = useHotelStore()
 const { aboutContent } = storeToRefs(hotelStore)
@@ -70,9 +72,13 @@ async function onSave() {
       wifiName: wifiName.value,
       wifiPassword: wifiPassword.value,
     })
+
+   emit('back')
   } catch (e) {
     console.error(e)
     alert("Save failed. Check console.")
+  } finally {
+    router.back()
   }
 }
 
@@ -81,6 +87,7 @@ const timeOptions = Array.from({ length: 24 * 4 }, (_, i) => {
   const m = String((i % 4) * 15).padStart(2, "0");
   return `${h}:${m}`;
 });
+
 
 </script>
 
