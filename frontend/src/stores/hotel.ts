@@ -87,5 +87,5 @@ async function saveAboutContent(
   return updated
 }
 
-  return { loaded, slug, name, description, latitude, longitude, mapZoom, aboutContent, mapContent, fetchBySlug, fetchBySession, saveAboutContent }
+  return { loaded, slug, name, description, latitude, longitude, mapZoom, aboutContent, mapContent, guestBookContent, pois, fetchBySlug, fetchBySession, saveAboutContent }
 })
