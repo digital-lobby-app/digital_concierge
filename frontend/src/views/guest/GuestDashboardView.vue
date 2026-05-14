@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { useRouter } from 'vue-router'
 import { useHotelStore } from '@/stores/hotel'
-import { IconMap2, IconBook, IconMessageChatbot,IconPhone } from '@tabler/icons-vue'
+import { IconMap2, IconBook, IconMessageChatbot,IconBuildingCommunity } from '@tabler/icons-vue'
 import { ref, watch } from 'vue'
 import { storeToRefs } from 'pinia'
 import { useBgImgStore } from '@/stores/backgroundImages'
@@ -65,7 +65,7 @@ function onEnter() {
     </div>
     <div id="dash-btns">
       <button class="dash-btn" @click="goTo('about')">
-        <i class="btn-icon"> <IconToolsKitchen3 :stroke="iconStroke" /> </i>
+        <i class="btn-icon"> <IconBuildingCommunity :stroke="iconStroke" /> </i>
         <p class="btn-txt">Our Info</p>
       </button>
       <button class="dash-btn" @click="goTo('map')">
@@ -118,9 +118,11 @@ function onEnter() {
 .dash-btn {
   height: 9em;
   border-radius: var(--main-border-radius);
-  border: none;
+  /* border: none; */
   color: var(--fixer);
-  background-color: var(--bg);
+  /* background-color: var(--bg); */
+  background: var(--glass);
+  border: 1px solid var(--glass-border);
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -152,22 +154,38 @@ p {
   content: "";
   position: absolute;
 
-  height: 2rem;
+  height: 3rem;
   bottom: 0.85rem;
-  width: calc(100% + 1rem);
+  width: calc(100% + 0.6rem);
 
-  background: var(--bg);
-  border-radius: 0.2em;
+  /* background: var(--bg); */
+  background: var(--glass);
+  border: 1px solid var(--glass-border);
+  border-radius: 4rem;
+  box-shadow: 0 4px 30px rgb(0 0 0 / 0.1);
+  backdrop-filter: blur(50px);
+  -webkit-backdrop-filter: blur(50px);
 
   z-index: -1;
 }
 
-.hl{
+/* .hl{
   background: var(--bg);
   box-decoration-break: clone;
   -webkit-box-decoration-break: clone;
   padding: 0 0.5rem;
   border-radius: 1rem;
+} */
+
+.hl{
+  background: var(--glass);
+  border: 1px solid var(--glass-border);
+  box-decoration-break: clone;
+  -webkit-box-decoration-break: clone;
+  padding: 0 0.5rem;
+  border-radius: 1rem;
+  /* backdrop-filter: blur(12px); */
+  /* -webkit-backdrop-filter: blur(12px); */
 }
 
 </style>

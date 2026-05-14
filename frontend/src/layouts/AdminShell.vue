@@ -2,7 +2,7 @@
 import { ref } from 'vue'
 import { useDraggable } from '@vueuse/core';
 import SettingsView from '@/views/admin/SettingsView.vue';
-import { IconSettings, IconX } from '@tabler/icons-vue'
+import { IconSettings, IconX, IconLogout  } from '@tabler/icons-vue'
 import { useHotelStore } from '@/stores/hotel';
 import { useFontPairStore } from '@/stores/fontPair';
 import { useBgImgStore } from '@/stores/backgroundImages';
@@ -65,7 +65,9 @@ const { style } = useDraggable(el, {
       <nav id="settings-container">
         <div id="settings-menu"><SettingsView /></div>
       </nav>
-      <button class="logout-button" v-on:click="adminLogout">logout</button>
+      <button class="logout-button" v-on:click="adminLogout">
+        <IconLogout id="logout-icon" stroke='2' />
+        logout</button>
     </div>
   </div>
 </template>
@@ -93,6 +95,7 @@ const { style } = useDraggable(el, {
   touch-action: none;
   pointer-events: auto;
   background-color: var(--accent);
+  /* background-color: var(--glass-accent); */
   color: var(--primary);
 }
 
@@ -125,6 +128,9 @@ const { style } = useDraggable(el, {
   border-radius: 16px;
   padding: 16px;
   pointer-events: auto;
+
+  display: flex;
+  flex-direction: column;
 }
 
 #settings-container {
@@ -152,11 +158,18 @@ const { style } = useDraggable(el, {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  padding: 0.3rem 0.8rem;
+  padding: 0.5rem 1rem;
   background: var(--secondary);
-  color: var(--text);
+  color: var(--icon-on-primary);
   border-radius: 12px;
   text-decoration: none;
-  font-size: 0.95rem;
+  font-size: 1rem;
+  font-family: var(--font-heading);
+  font-weight: bold;
+  gap: 0.3rem;
+}
+
+#logout-icon{
+  color: var(--icon-on-primary);
 }
 </style>
