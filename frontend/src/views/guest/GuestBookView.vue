@@ -88,12 +88,14 @@ function formatReviewDate(d: Date) {
   flex-direction: column;
   height: 100%;
   color: var(--text);
+  padding: 1rem 1rem;
 }
 
 .guestbook-header {
   display: flex;
   margin-bottom: 0.4rem;
   flex-shrink: 0;
+  padding: 0rem 1rem;
 }
 
 .guestbook-messages {

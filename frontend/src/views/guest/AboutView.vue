@@ -91,6 +91,7 @@ const isMobile = computed(() => windowWidth.value <= SCREEN_WIDTH_MAX)
 #about-us {
   color: var(--text);
   font-family: var(--font);
+  padding: 0rem 0.5rem;
 }
 
 .content {

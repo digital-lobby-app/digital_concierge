@@ -182,6 +182,7 @@ function onInputKeydown(e: KeyboardEvent) {
   height: 100%;
   color: var(--text);
   font-size: 0.875rem;
+  padding: 0.5rem 1rem;
 }
 
 /* header */
