@@ -25,7 +25,7 @@ async function main() {
       logoUrl: '',                     // TBD — path to static asset, e.g. /logos/adam.png
       latitude: 46.77694526380854,
       longitude: 12.917673716739909,
-      mapZoom: 14,
+      mapZoom: 15,
 
       settings: {
         create: {
@@ -54,16 +54,12 @@ async function main() {
           {
             view: 'map',
             position: 1,
-            content: {
-              pois: [],                // empty for MVP
-            },
+            content: {},
           },
           {
             view: 'guestbook',
             position: 2,
-            content: {
-              entries: [],             // empty to begin
-            },
+            content: {},
           },
         ],
       },
@@ -84,7 +80,7 @@ async function main() {
       logoUrl: '',
       latitude: 48.85367587564214,
       longitude: 2.3364627421438335,
-      mapZoom: 14,
+      mapZoom: 15,
 
       settings: {
         create: {
@@ -112,16 +108,12 @@ async function main() {
           {
             view: 'map',
             position: 1,
-            content: {
-              pois: [],
-            },
+            content: {},
           },
           {
             view: 'guestbook',
             position: 2,
-            content: {
-              entries: [],
-            },
+            content: {},
           },
         ],
       },
@@ -148,6 +140,45 @@ async function main() {
       hotelId: 'H003',
     },
   })
+
+  // ════════ POIs ═════════════════════════════════════════════════════
+  const pois = [
+    // Le Pain Doré (H003)
+    { id: 'P001', hotelId: 'H003', category: 'restaurant' as const, latitude: 48.8556, longitude: 2.3350, name: 'Café de Flore', comment: 'Our favourite spot for morning coffee — try the croissants.', source: 'admin' as const },
+    { id: 'P002', hotelId: 'H003', category: 'sports' as const, latitude: 48.8480, longitude: 2.3338, name: 'Tennis du Luxembourg', comment: 'Friendly courts in the Jardin du Luxembourg. Reservations available at reception.', source: 'admin' as const },
+    { id: 'P003', hotelId: 'H003', category: 'attraction' as const, latitude: 48.8606, longitude: 2.3376, name: 'Louvre Museum', comment: 'Skip the queue with our hotel ticket service.', source: 'admin' as const },
+    { id: 'P004', hotelId: 'H003', category: 'shopping' as const, latitude: 48.85122019977861, longitude: 2.324485051407109, name: 'Le Bon Marché', comment: "Paris's oldest department store — perfect for unique gifts.", source: 'admin' as const },
+    { id: 'P009', hotelId: 'H003', category: 'attraction' as const, latitude: 48.828471574957554, longitude: 2.3215688284456877, name: 'Jon Nilsen residence', comment: 'The famous artist Jon lived here - beware of the queue', source: 'admin' as const },
+    // Adalino's (H001)
+    { id: 'P005', hotelId: 'H001', category: 'restaurant' as const, latitude: 46.7782, longitude: 12.9203, name: 'Berghütte Alpenrose', comment: 'Traditional mountain hut with excellent local cuisine and Alpine views.', source: 'admin' as const },
+    { id: 'P006', hotelId: 'H001', category: 'sports' as const, latitude: 46.7801, longitude: 12.9250, name: 'Skischule Lienz', comment: 'Our preferred ski school. Mention our hotel for a discount.', source: 'admin' as const },
+    { id: 'P007', hotelId: 'H001', category: 'attraction' as const, latitude: 46.7745, longitude: 12.9102, name: 'Schloss Bruck', comment: "Medieval castle with stunning views. Don't miss the regional museum.", source: 'admin' as const },
+    { id: 'P008', hotelId: 'H001', category: 'shopping' as const, latitude: 46.7762, longitude: 12.9157, name: 'Lienz Hauptmarkt', comment: "Weekly farmers' market with regional produce and Tirolean crafts.", source: 'admin' as const },
+  ]
+  for (const p of pois) {
+    await prisma.poi.upsert({ where: { id: p.id }, update: {}, create: p })
+  }
+  console.log(`  ✓ ${pois.length} POIs`)
+
+  // ════════ Reviews ══════════════════════════════════════════════════
+  const reviews = [
+    // Le Pain Doré (H003)
+    { id: 'R001', hotelId: 'H003', type: 'map' as const, poiId: 'P001', rating: 5, comment: 'Best croissants in the 6th — flaky and fresh.', reviewerName: 'Marie' },
+    { id: 'R002', hotelId: 'H003', type: 'map' as const, poiId: 'P001', rating: 4, comment: 'Lovely atmosphere, a bit pricey but worth it.', reviewerName: null },
+    { id: 'R003', hotelId: 'H003', type: 'map' as const, poiId: 'P003', rating: 5, comment: 'Skip-the-queue ticket was a lifesaver.', reviewerName: 'Tom' },
+    { id: 'R004', hotelId: 'H003', type: 'guestbook' as const, poiId: null, rating: null, comment: 'A magical stay in Paris — Alfred made everything feel effortless. We will be back.', reviewerName: 'Sarah' },
+    { id: 'R005', hotelId: 'H003', type: 'guestbook' as const, poiId: null, rating: null, comment: 'Beautiful room overlooking the courtyard. Breakfast was top notch.', reviewerName: 'James' },
+    { id: 'R006', hotelId: 'H003', type: 'guestbook' as const, poiId: null, rating: null, comment: 'Friendly staff and a perfect location near the Jardin du Luxembourg.', reviewerName: null },
+    // Adalino's (H001)
+    { id: 'R007', hotelId: 'H001', type: 'map' as const, poiId: 'P005', rating: 5, comment: 'The Knödel were incredible. Cosy hut with stunning views.', reviewerName: 'Klaus' },
+    { id: 'R008', hotelId: 'H001', type: 'map' as const, poiId: 'P006', rating: 4, comment: 'Great instructor for our beginner kids — patient and fun.', reviewerName: 'Anna' },
+    { id: 'R009', hotelId: 'H001', type: 'guestbook' as const, poiId: null, rating: null, comment: 'A perfect base for skiing the Lienzer Dolomiten. Warm welcome from the team.', reviewerName: 'Lukas' },
+    { id: 'R010', hotelId: 'H001', type: 'guestbook' as const, poiId: null, rating: null, comment: 'The sauna after a long ski day — pure bliss.', reviewerName: null },
+  ]
+  for (const r of reviews) {
+    await prisma.review.upsert({ where: { id: r.id }, update: {}, create: r })
+  }
+  console.log(`  ✓ ${reviews.length} reviews`)
 
   console.log('Seed complete.')
 }

@@ -1,6 +1,7 @@
 import { defineStore } from 'pinia'
 import { ref } from 'vue'
-import { fetchHotelBySlug, fetchSlugById, patchAboutModuleMe } from '@/services/hotel.service'
+import { fetchHotelBySlug, fetchPoisBySlug, fetchSlugById, patchAboutModuleMe } from '@/services/hotel.service'
+import type { Poi } from '@/services/hotel.service'
 
 export const useHotelStore = defineStore('hotel', () => {
   const loaded = ref(false)
@@ -13,6 +14,7 @@ export const useHotelStore = defineStore('hotel', () => {
   const aboutContent = ref()
   const mapContent = ref()
   const guestBookContent = ref()
+  const pois = ref<Poi[]>([])
 
   async function fetchBySlug(s: string) {
     try {
@@ -26,6 +28,7 @@ export const useHotelStore = defineStore('hotel', () => {
       latitude.value = hotel.latitude
       longitude.value = hotel.longitude
       mapZoom.value = hotel.mapZoom
+      pois.value = await fetchPoisBySlug(s)
       loaded.value = true
       return true
     } catch (err) {

@@ -1,5 +1,6 @@
 import { z } from 'zod'
 import { apiRequest } from '@/helpers/apiRequest'
+import { reviewSchema } from '@/services/review.service'
 
 // mudole
 
@@ -59,6 +60,34 @@ const hotelSettingsSchema = z.object({
   updatedAt: z.coerce.date(),
 })
 
+// pois
+
+const poiSchema = z.object({
+  id: z.string(),
+  hotelId: z.string(),
+  category: z.enum(['restaurant', 'sports', 'attraction', 'shopping']),
+  latitude: z.number(),
+  longitude: z.number(),
+  name: z.string().min(1).max(32),
+  comment: z.string().max(128).nullable(),
+  source: z.enum(['admin', 'guest']),
+  reviews: z.array(reviewSchema).default([]),
+  createdAt: z.coerce.date(),
+  updatedAt: z.coerce.date(),
+})
+
+export type Poi = z.infer<typeof poiSchema>
+export type PoiCategory = z.infer<typeof poiSchema>['category']
+export type PoiCreateInput = {
+  category: PoiCategory
+  latitude: number
+  longitude: number
+  name: string
+  rating?: number
+  comment?: string
+  reviewerName?: string
+}
+
 // hotel
 
 const hotelSchema = z.object({
@@ -92,6 +121,36 @@ export async function fetchSlugById(userId: string): Promise<string> {
   })
   return z.string().parse(slug)
 }
+
+export async function fetchPoisBySlug(slug: string): Promise<Poi[]> {
+  const data = await apiRequest<unknown>(`/hotels/${slug}/pois`)
+  return z.array(poiSchema).parse(data)
+}
+
+export async function createPoi(
+  slug: string,
+  input: PoiCreateInput,
+  userId?: string
+): Promise<Poi> {
+  const data = await apiRequest<unknown>(`/hotels/${slug}/pois`, {
+    method: 'POST',
+    headers: userId !== undefined ? { Authorization: `Bearer ${userId}` } : {},
+    body: JSON.stringify(input),
+  })
+  return poiSchema.parse(data)
+}
+
+export async function deletePoi(
+  slug: string,
+  poiId: string,
+  userId: string
+): Promise<void> {
+  await apiRequest<void>(`/hotels/${slug}/pois/${poiId}`, {
+    method: 'DELETE',
+    headers: { Authorization: `Bearer ${userId}` },
+  })
+}
+
 
 export async function patchAboutModuleMe(
   supabaseUserId: string,
