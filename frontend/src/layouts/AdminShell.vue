@@ -8,6 +8,7 @@ import { useFontPairStore } from '@/stores/fontPair';
 import { useBgImgStore } from '@/stores/backgroundImages';
 import { storeToRefs } from 'pinia';
 import { useThemeStore } from '@/stores/themeStore';
+import { adminLogout } from '@/services/auth.service';
 
 
 const hotel = useHotelStore()
@@ -64,6 +65,7 @@ const { style } = useDraggable(el, {
       <nav id="settings-container">
         <div id="settings-menu"><SettingsView /></div>
       </nav>
+      <button class="logout-button" v-on:click="adminLogout">logout</button>
     </div>
   </div>
 </template>
@@ -143,5 +145,18 @@ const { style } = useDraggable(el, {
   padding: 0.5rem;
   cursor: pointer;
   color: var(--text);
+}
+
+.logout-button {
+  margin-top: 1rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.3rem 0.8rem;
+  background: var(--secondary);
+  color: var(--text);
+  border-radius: 12px;
+  text-decoration: none;
+  font-size: 0.95rem;
 }
 </style>
