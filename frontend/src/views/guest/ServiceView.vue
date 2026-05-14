@@ -3,7 +3,7 @@ import { IconSend } from '@tabler/icons-vue';
 import gsap from 'gsap';
 import { nextTick, onMounted, ref } from 'vue';
 import { useHotelStore } from '@/stores/hotel';
-import { postQuestionToChatbot } from '@/services/chatbot.service';
+import { postChatbotMessages, type ApiMessage } from '@/services/chatbot.service';
 import Messages, { type Message } from '@/components/chatbot/Messages.vue';
 
 const dotRef = ref<HTMLElement | null>(null)
@@ -37,11 +37,32 @@ function scrollToBottom() {
   })
 }
 
-async function fetchAssistantReply(userMessage: string): Promise<string> {
+function buildApiHistory(uiMessages: Message[]): ApiMessage[] {
+  const valid = uiMessages.filter(
+    (m) => !m.pending && !m.error && m.content.trim().length > 0,
+  )
+  let endIdx = valid.length - 1
+  while (endIdx >= 0 && valid[endIdx].role !== 'user') endIdx--
+  if (endIdx < 0) return []
+
+  const out: ApiMessage[] = []
+  let expected: 'user' | 'assistant' = 'user'
+  for (let i = endIdx; i >= 0; i--) {
+    const m = valid[i]
+    if (m.role !== expected) break
+    out.unshift({ role: m.role, content: m.content })
+    expected = expected === 'user' ? 'assistant' : 'user'
+  }
+  if (out.length > 0 && out[0].role === 'assistant') out.shift()
+  return out
+}
+
+async function fetchAssistantReply(): Promise<string> {
   if (!hotel.slug) {
     throw new Error('Hotel slug is missing — cannot call chatbot.')
   }
-  const { reply } = await postQuestionToChatbot(hotel.slug, userMessage)
+  const history = buildApiHistory(messages.value)
+  const { reply } = await postChatbotMessages(hotel.slug, history)
   return reply
 }
 
@@ -72,7 +93,7 @@ async function sendMessage() {
   // call backend + swap reply
   isSending.value = true
   try {
-    const reply = await fetchAssistantReply(text)
+    const reply = await fetchAssistantReply()
     const idx = messages.value.findIndex(m => m.id === pendingId)
     if (idx !== -1) {
       messages.value[idx] = {
@@ -89,6 +110,7 @@ async function sendMessage() {
         id: pendingId,
         role: 'assistant',
         content: 'Sorry, something went wrong reaching the server. Please try again.',
+        error: true,
       }
     }
   } finally {

@@ -67,6 +67,7 @@ model Hotel {
   modules  Module[]
   pois     Poi[]
   reviews  Review[]
+  faqs     Faq[]
 }
 
 /// Hotel admin identity. One row per Supabase auth user.
@@ -122,6 +123,20 @@ model Poi {
   hotelId String
   hotel   Hotel    @relation(fields: [hotelId], references: [id])
   reviews Review[]
+}
+
+model Faq {
+  id        String   @id @default(uuid())
+  question  String
+  answer    String
+  position  Int      @default(0)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  hotelId String
+  hotel   Hotel  @relation(fields: [hotelId], references: [id], onDelete: Cascade)
+
+  @@index([hotelId])
 }
 
 /// Map review (tied to a POI) or guestbook entry (no POI).

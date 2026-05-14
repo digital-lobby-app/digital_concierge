@@ -9,6 +9,7 @@ export interface Message {
   role: MessageRole
   content: string
   pending?: boolean
+  error?: boolean
 }
 
 const props = defineProps<{
